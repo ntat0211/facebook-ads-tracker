@@ -131,6 +131,7 @@ function dual(id,a,b,labels,la,lb){var z=canvas(id),x=z.x,w=z.w,h=z.h,ma=Math.ma
 function line(id,vals,labels,title){var z=canvas(id),x=z.x,p=axes(x,z.w,z.h,Math.max(1,...vals.filter(function(v){return v!==null})),labels);x.fillStyle="#2878f0";x.font="11px system-ui";x.fillText(title,p.l,p.t+10);x.beginPath();var started=false;vals.forEach(function(v,i){if(v===null)return;var xx=p.l+(vals.length===1?p.pw/2:i*p.pw/Math.max(1,vals.length-1)),yy=p.t+p.ph-v/Math.max(1,...vals.filter(function(v){return v!==null}))*p.ph;if(!started){x.moveTo(xx,yy);started=true}else x.lineTo(xx,yy)});if(started){x.strokeStyle="#ff8a34";x.lineWidth=2.4;x.stroke()}}
 
 function heatmapMetricValue(m,key){return key==="spend"?m.spend:key==="leads"?m.leads:key==="cpl"?m.cpl:key==="imp"?m.imp:key==="reach"?m.reach:key==="ctr"?m.ctr:key==="cpc"?m.cpc:0}
+function heatMetricValue(m,key){return key==="spend"?m.spend:key==="leads"?m.leads:key==="cpl"?m.cpl:key==="imp"?m.imp:key==="reach"?m.reach:key==="ctr"?m.ctr:key==="cpc"?m.cpc:0}
 function heatMetricLabel(key){return ({spend:"Spend",leads:"Leads",cpl:"CPL",imp:"Impressions",reach:"Reach",ctr:"CTR link",cpc:"CPC link"})[key]||key}
 function heatMetricFormat(key,v){if(key==="spend"||key==="cpl"||key==="cpc")return cash(v);if(key==="ctr")return fnum(v,2)+"%";return fnum(v)}
 function drawHeatmap(rows){
