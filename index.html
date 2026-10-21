@@ -139,7 +139,7 @@ function parseHour(hourValue,dateValue){
  var h=fromText(hourValue);if(h!==null)return h;
  return fromText(dateValue);
 }
-function fieldHasData(rs,key){var col=S.map[key];if(!col)return false;return rs.some(function(r){var v=r[col];if(v===null||v===undefined||String(v).trim()==="")return false;var z=Number(String(v).replace(/[,$%\\s]/g,""));return isFinite(z);});}
+function fieldHasData(rs,key){var col=S.map[key];if(!col)return false;return rs.some(function(r){var v=r[col];if(v===null||v===undefined||String(v).trim()==="")return false;var z=Number(String(v).replace(/[,$%\s]/g,""));return isFinite(z);});}
 function n(v){if(typeof v==="number")return v;var s=String(v||"").trim().replace(/[,$%\s]/g,"");var z=Number(s);return isFinite(z)?z:0}
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function fnum(v,d){return Number(v||0).toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFractionDigits:d||0})}
