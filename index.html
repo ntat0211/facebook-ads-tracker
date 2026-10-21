@@ -47,6 +47,16 @@ button{font-family:inherit;font-size:11px;font-weight:700;border-radius:10px;pad
 .heat-swatch{display:inline-block;width:14px;height:14px;border-radius:4px;border:1px solid #90a8c322}
 .heat-legend-note{margin-left:10px;color:#91a0b5}
 @media(max-width:800px){.heat-cell{width:27px;height:27px}.heat-grid{grid-auto-columns:27px;grid-template-rows:repeat(7,27px)}.heat-months{grid-auto-columns:27px}.heat-weekdays{grid-template-rows:18px repeat(7,27px)}.heatmap-layout{grid-template-columns:26px max-content}}
+
+.hour-heatmap-scroll{overflow-x:auto;padding:8px 0 12px}
+.hour-heatmap-grid{display:grid;grid-template-columns:82px repeat(7,minmax(68px,1fr));gap:5px;min-width:700px;align-items:stretch}
+.hour-head{display:flex;align-items:center;justify-content:center;background:#f3f7fd;color:#516b8d;font-size:10px;font-weight:800;border:1px solid #e2ebf7;border-radius:7px;min-height:31px}
+.hour-label{display:flex;align-items:center;justify-content:flex-end;padding-right:10px;color:#6d819b;font-size:10px;font-weight:650}
+.hour-cell{display:flex;justify-content:center;align-items:center;min-height:32px;border-radius:7px;border:1px solid rgba(92,127,168,.10);font:700 10px 'Montserrat',Arial,sans-serif;cursor:default;transition:transform .12s,box-shadow .12s;outline:none}
+.hour-cell:hover,.hour-cell:focus{transform:scale(1.04);box-shadow:0 2px 8px #244b7a25;z-index:2}
+.hour-cell.heat-level-0{background:#f0f6ff;color:#7089a9}.hour-cell.heat-level-1{background:#d8e8ff;color:#45678f}.hour-cell.heat-level-2{background:#a9ceff;color:#234f85}.hour-cell.heat-level-3{background:#6ba7fb;color:#123c79}.hour-cell.heat-level-4{background:#2878f0;color:#fff}
+.hour-cell.heat-cost.heat-level-0{background:#fff6ed;color:#9b7b61}.hour-cell.heat-cost.heat-level-1{background:#ffe5ce;color:#92562c}.hour-cell.heat-cost.heat-level-2{background:#ffc18d;color:#763e18}.hour-cell.heat-cost.heat-level-3{background:#ff9a4a;color:#63300a}.hour-cell.heat-cost.heat-level-4{background:#e96d19;color:#fff}
+.hour-cell.no-hour-data{background:#f8fafc;border:1px dashed #dfe8f2;color:#bac5d4}
 </style></head><body><div class="app-shell">
 <aside class="sidebar">
   <div class="brand"><div class="brand-mark">▥</div><div class="brand-name">Facebook Ads<br>Tracker Pro</div></div>
@@ -72,14 +82,16 @@ button{font-family:inherit;font-size:11px;font-weight:700;border-radius:10px;pad
 <section class="panel" id="trends"><h2>6. Trend theo thời gian</h2><div class="grid"><div class="chart"><h3>Spend & Leads</h3><canvas id="trend"></canvas></div><div class="chart"><h3>CPL theo thời gian</h3><canvas id="cpl"></canvas></div><div class="chart"><h3>CTR link & CPC link</h3><canvas id="clicktrend"></canvas></div><div class="chart"><h3>Impressions & Reach</h3><canvas id="reachtrend"></canvas></div></div></section>
 
 <section class="panel" id="dailyHeatmap">
-  <div class="top"><div><h2>7. Daily Performance Heatmap</h2><div class="hint">Mỗi ô là một ngày trong file export. Màu đậm hơn thể hiện giá trị tương đối cao trong khoảng dữ liệu đang lọc.</div></div>
-    <label>Chỉ số hiển thị<select id="heatMetric"><option value="leads">Leads</option><option value="spend">Spend</option><option value="cpl">Cost per Lead (CPL)</option><option value="imp">Impressions</option><option value="reach">Reach</option><option value="ctr">CTR link</option><option value="cpc">CPC link</option></select></label>
+  <div class="top"><div><h2>7. Day & Hour Performance Heatmap</h2><div class="hint">Xem khung giờ nào ghi nhận kết quả nhiều hơn theo từng thứ trong tuần. Mỗi ô gom dữ liệu của khung 2 giờ và cộng qua khoảng ngày đang lọc.</div></div>
+    <label>Chỉ số hiển thị<select id="heatMetric"><option value="leads">Leads / Results</option><option value="spend">Spend</option><option value="cpl">Cost per Lead (CPL)</option><option value="imp">Impressions</option><option value="clicks">Link clicks</option><option value="ctr">CTR link</option><option value="cpc">CPC link</option></select></label>
   </div>
-  <div id="heatSummary" class="heat-summary">Upload báo cáo có breakdown theo ngày để tạo heatmap.</div>
-  <div class="heatmap-scroll"><div class="heatmap-layout"><div id="heatWeekdays" class="heat-weekdays"></div><div class="heatmap-main"><div id="heatMonths" class="heat-months"></div><div id="heatGrid" class="heat-grid"></div></div></div></div>
+  <div id="heatSummary" class="heat-summary">Upload file có breakdown theo Day & hour để tạo heatmap.</div>
+  <div class="hour-heatmap-scroll"><div id="hourHeatGrid" class="hour-heatmap-grid"></div></div>
   <div class="heat-legend"><span>Thấp</span><i class="heat-swatch heat-level-0"></i><i class="heat-swatch heat-level-1"></i><i class="heat-swatch heat-level-2"></i><i class="heat-swatch heat-level-3"></i><i class="heat-swatch heat-level-4"></i><span>Cao</span><span id="heatLegendNote" class="heat-legend-note"></span></div>
-  <div class="hint">Hover/chạm vào ô ngày để xem Spend, Leads, CPL, Impressions và Link clicks. Nếu chọn CPL/CPC, màu đậm nghĩa là chi phí cao hơn — không đồng nghĩa hiệu quả tốt hơn.</div>
+  <div class="hint">Rê chuột hoặc chạm vào ô để xem ngày/khung giờ và số liệu. Với CPL/CPC, màu đậm hơn nghĩa là chi phí cao hơn. File chỉ có ngày không thể suy ra hiệu suất theo giờ.</div>
 </section>
+
+
 <section class="panel"><h2>8. Gợi ý kiểm tra</h2><div id="insights" class="grid"></div><div class="hint">Gợi ý định hướng kiểm tra, không thay thế việc đánh giá chất lượng Lead hoặc target CPL.</div></section>
 <section class="panel" id="performance"><div class="top"><h2 id="datatable">9. Bảng hiệu suất</h2><div class="row"><input id="search" placeholder="Tìm nhóm quảng cáo"><select id="sort"><option value="spend">Sắp xếp: Spend</option><option value="leads">Leads</option><option value="cpl">CPL</option><option value="ctr">CTR</option><option value="clicks">Link clicks</option></select><select id="dir"><option value="desc">Giảm dần</option><option value="asc">Tăng dần</option></select></div></div><div class="tablewrap"><table id="table"><thead></thead><tbody></tbody></table></div><div id="tableNote" class="hint"></div></section>
 <section class="panel"><div class="note"><b>Lưu ý:</b> “Results” trong Meta có thể là nhiều loại hành động. Hãy map đúng một cột Lead cụ thể hoặc xác nhận cột Results là Lead. CPL = Spend / Leads; CTR link = Link clicks / Impressions; CPC = Spend / Link clicks. Reach của các ngày có thể trùng người. Đổi currency chỉ đổi ký hiệu/định dạng, không quy đổi ngoại tệ.</div></section>
@@ -87,7 +99,8 @@ button{font-family:inherit;font-size:11px;font-weight:700;border-radius:10px;pad
 <script>
 var $=function(id){return document.getElementById(id)},S={headers:[],raw:[],map:{},cur:""};
 var F=[
-["date","Ngày báo cáo",["reporting starts","date","day","start date","ngày bắt đầu"]],
+["date","Ngày báo cáo",["reporting starts","date","day","start date","ngày bắt đầu","day & hour","day and hour"]],
+["hour","Hour of day",["hour","hour of day","day & hour","day and hour","time of day","hourly"]],
 ["campaign","Campaign name",["campaign name","campaign","tên chiến dịch"]],
 ["objective","Campaign objective",["campaign objective","objective","mục tiêu chiến dịch","mục tiêu"]],
 ["adset","Ad set name",["ad set name","adset name","ad set","nhóm quảng cáo"]],
@@ -103,16 +116,30 @@ var F=[
 function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim()}
 function parseCSV(s){s=s.replace(/^\uFEFF/,"");var first=s.split(/\r?\n/)[0]||"",sep=(first.match(/\t/g)||[]).length>(first.match(/,/g)||[]).length?"\t":",",out=[],row=[],cell="",q=false;for(var i=0;i<s.length;i++){var c=s[i];if(c==='"'){if(q&&s[i+1]==='"'){cell+='"';i++}else q=!q}else if(c===sep&&!q){row.push(cell);cell=""}else if((c==="\n"||c==="\r")&&!q){if(c==="\r"&&s[i+1]==="\n")i++;row.push(cell);if(row.some(function(x){return x.trim()}))out.push(row);row=[];cell=""}else cell+=c}row.push(cell);if(row.some(function(x){return x.trim()}))out.push(row);return out}
 function date(v){var s=String(v||"").trim(),m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);if(m)return (m[3].length===2?"20"+m[3]:m[3])+"-"+m[1].padStart(2,"0")+"-"+m[2].padStart(2,"0");var d=new Date(s);return isNaN(d)?"":d.toISOString().slice(0,10)}
+
+function parseHour(hourValue,dateValue){
+ function fromText(value){
+  var s=String(value==null?"":value).trim();if(!s)return null;
+  var ap=s.match(/(?:^|[^\\d])(1[0-2]|0?\\d)(?::[0-5]\\d)?\\s*(AM|PM)\\b/i);
+  if(ap){var h=Number(ap[1])%12;if(ap[2].toUpperCase()==="PM")h+=12;return h;}
+  if(/^(?:[01]?\\d|2[0-3])$/.test(s))return Number(s);
+  var tm=s.match(/(?:^|[T,\\s])([01]?\\d|2[0-3]):([0-5]\\d)(?::[0-5]\\d)?\\b/);
+  if(tm)return Number(tm[1]);
+  return null;
+ }
+ var h=fromText(hourValue);if(h!==null)return h;
+ return fromText(dateValue);
+}
 function n(v){if(typeof v==="number")return v;var s=String(v||"").trim().replace(/[,$%\s]/g,"");var z=Number(s);return isFinite(z)?z:0}
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function fnum(v,d){return Number(v||0).toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFractionDigits:d||0})}
 function curr(){return $("currency").value==="auto"?(S.cur||"other"):$("currency").value}
 function cash(v){var c=curr(),sym={USD:"$",VND:"₫",CAD:"C$",AUD:"A$",EUR:"€",GBP:"£",SGD:"S$",other:""};return (sym[c]||"")+fnum(v,c==="VND"?0:2)}
 function infer(raw,camp){if(raw)return String(raw);var s=String(camp||"").toLowerCase();if(/awareness|reach|brand|nhan dien/.test(s))return "Awareness (suy luận)";if(/traffic|click/.test(s))return "Traffic (suy luận)";if(/lead|form|messag|conversation/.test(s))return "Lead Generation (suy luận)";if(/sales|purchase|conversion/.test(s))return "Sales (suy luận)";return "Unknown"}
-function load(head,objs){S.headers=head;S.map={};F.forEach(function(f){var h=head.find(function(x){return f[2].some(function(a){return norm(a)===norm(x)})});if(!h&&f[0]==="leads")h=head.find(function(x){return /lead/i.test(x)&&!/cost|rate|value/i.test(x)});S.map[f[0]]=h||""});var m=head.join(" ").toUpperCase().match(/AMOUNT SPENT\s*\((USD|VND|CAD|AUD|EUR|GBP|SGD)\)/);S.cur=m?m[1]:"";S.raw=objs.map(function(o){var c=o[S.map.campaign]||"(Campaign không rõ)";return Object.assign({},o,{_date:date(o[S.map.date]),_campaign:String(c),_objective:infer(o[S.map.objective],c),_adset:String(o[S.map.adset]||"(Ad Set không rõ)"),_ad:String(o[S.map.ad]||"(Ad không rõ)")})});buildMap();buildFilters();$("mapBtn").disabled=false;$("export").disabled=false;msg("Đã nạp "+objs.length+" dòng. Kiểm tra mapping Lead và đơn vị tiền tệ trước khi dùng báo cáo.",S.map.spend&&S.map.leads?"ok":"warn");$("mapnote").textContent="Currency tự nhận diện: "+(S.cur||"không rõ")+". Nếu tên cột không ghi tiền tệ, hãy tự chọn đúng currency của ad account.";render()}
+function load(head,objs){S.headers=head;S.map={};F.forEach(function(f){var h=head.find(function(x){return f[2].some(function(a){return norm(a)===norm(x)})});if(!h&&f[0]==="leads")h=head.find(function(x){return /lead/i.test(x)&&!/cost|rate|value/i.test(x)});S.map[f[0]]=h||""});var m=head.join(" ").toUpperCase().match(/AMOUNT SPENT\s*\((USD|VND|CAD|AUD|EUR|GBP|SGD)\)/);S.cur=m?m[1]:"";S.raw=objs.map(function(o){var c=o[S.map.campaign]||"(Campaign không rõ)";return Object.assign({},o,{_date:date(o[S.map.date]),_hour:parseHour(o[S.map.hour],o[S.map.date]),_campaign:String(c),_objective:infer(o[S.map.objective],c),_adset:String(o[S.map.adset]||"(Ad Set không rõ)"),_ad:String(o[S.map.ad]||"(Ad không rõ)")})});buildMap();buildFilters();$("mapBtn").disabled=false;$("export").disabled=false;msg("Đã nạp "+objs.length+" dòng. Kiểm tra mapping Lead và đơn vị tiền tệ trước khi dùng báo cáo.",S.map.spend&&S.map.leads?"ok":"warn");$("mapnote").textContent="Currency tự nhận diện: "+(S.cur||"không rõ")+". Nếu tên cột không ghi tiền tệ, hãy tự chọn đúng currency của ad account.";render()}
 function msg(s,c){$("status").textContent=s;$("status").className="status "+(c||"")}
 function buildMap(){ $("mapping").innerHTML=F.map(function(f){return '<label>'+f[1]+'<select data-k="'+f[0]+'"><option value="">— không dùng —</option>'+S.headers.map(function(h){return '<option '+(h===S.map[f[0]]?"selected":"")+' value="'+esc(h)+'">'+esc(h)+'</option>'}).join("")+'</select></label>'}).join("")}
-function applyMap(){document.querySelectorAll("[data-k]").forEach(function(el){S.map[el.dataset.k]=el.value});S.raw=S.raw.map(function(r){var c=r[S.map.campaign]||"(Campaign không rõ)";r._date=date(r[S.map.date]);r._campaign=String(c);r._objective=infer(r[S.map.objective],c);r._adset=String(r[S.map.adset]||"(Ad Set không rõ)");r._ad=String(r[S.map.ad]||"(Ad không rõ)");return r});buildFilters();render();msg("Đã áp dụng mapping — đối chiếu Spend và Leads với Ads Manager.","ok")}
+function applyMap(){document.querySelectorAll("[data-k]").forEach(function(el){S.map[el.dataset.k]=el.value});S.raw=S.raw.map(function(r){var c=r[S.map.campaign]||"(Campaign không rõ)";r._date=date(r[S.map.date]);r._hour=parseHour(r[S.map.hour],r[S.map.date]);r._campaign=String(c);r._objective=infer(r[S.map.objective],c);r._adset=String(r[S.map.adset]||"(Ad Set không rõ)");r._ad=String(r[S.map.ad]||"(Ad không rõ)");return r});buildFilters();render();msg("Đã áp dụng mapping — đối chiếu Spend và Leads với Ads Manager.","ok")}
 function fill(id,vals){var e=$(id),old=e.value;e.innerHTML='<option value="">Tất cả</option>'+vals.map(function(v){return '<option value="'+esc(v)+'">'+esc(v)+'</option>'}).join("");if(vals.indexOf(old)>=0)e.value=old}
 function buildFilters(){fill("campaign",Array.from(new Set(S.raw.map(function(r){return r._campaign}))).sort());subs()}
 function subs(){var c=$("campaign").value,rs=S.raw.filter(function(r){return !c||r._campaign===c});fill("adset",Array.from(new Set(rs.map(function(r){return r._adset}))).sort());rs=rs.filter(function(r){return !$("adset").value||r._adset===$("adset").value});fill("ad",Array.from(new Set(rs.map(function(r){return r._ad}))).sort())}
@@ -131,43 +158,44 @@ function dual(id,a,b,labels,la,lb){var z=canvas(id),x=z.x,w=z.w,h=z.h,ma=Math.ma
 function line(id,vals,labels,title){var z=canvas(id),x=z.x,p=axes(x,z.w,z.h,Math.max(1,...vals.filter(function(v){return v!==null})),labels);x.fillStyle="#2878f0";x.font="11px system-ui";x.fillText(title,p.l,p.t+10);x.beginPath();var started=false;vals.forEach(function(v,i){if(v===null)return;var xx=p.l+(vals.length===1?p.pw/2:i*p.pw/Math.max(1,vals.length-1)),yy=p.t+p.ph-v/Math.max(1,...vals.filter(function(v){return v!==null}))*p.ph;if(!started){x.moveTo(xx,yy);started=true}else x.lineTo(xx,yy)});if(started){x.strokeStyle="#ff8a34";x.lineWidth=2.4;x.stroke()}}
 
 function heatmapMetricValue(m,key){return key==="spend"?m.spend:key==="leads"?m.leads:key==="cpl"?m.cpl:key==="imp"?m.imp:key==="reach"?m.reach:key==="ctr"?m.ctr:key==="cpc"?m.cpc:0}
-function heatMetricValue(m,key){return key==="spend"?m.spend:key==="leads"?m.leads:key==="cpl"?m.cpl:key==="imp"?m.imp:key==="reach"?m.reach:key==="ctr"?m.ctr:key==="cpc"?m.cpc:0}
-function heatMetricLabel(key){return ({spend:"Spend",leads:"Leads",cpl:"CPL",imp:"Impressions",reach:"Reach",ctr:"CTR link",cpc:"CPC link"})[key]||key}
+
+function heatMetricValue(m,key){return key==="spend"?m.spend:key==="leads"?m.leads:key==="cpl"?m.cpl:key==="imp"?m.imp:key==="reach"?m.reach:key==="clicks"?m.clicks:key==="ctr"?m.ctr:key==="cpc"?m.cpc:0}
+function heatMetricLabel(key){return ({spend:"Spend",leads:"Leads / Results",cpl:"CPL",imp:"Impressions",reach:"Reach",clicks:"Link clicks",ctr:"CTR link",cpc:"CPC link"})[key]||key}
 function heatMetricFormat(key,v){if(key==="spend"||key==="cpl"||key==="cpc")return cash(v);if(key==="ctr")return fnum(v,2)+"%";return fnum(v)}
 function drawHeatmap(rows){
- var wk=["T2","T3","T4","T5","T6","T7","CN"],weekdays=$("heatWeekdays"),months=$("heatMonths"),grid=$("heatGrid"),summary=$("heatSummary"),note=$("heatLegendNote"),key=$("heatMetric").value||"leads";
- weekdays.innerHTML='<span></span>'+wk.map(function(x){return "<span>"+x+"</span>"}).join("");
- var daily=new Map();rows.forEach(function(r){if(!r._date)return;if(!daily.has(r._date))daily.set(r._date,[]);daily.get(r._date).push(r)});
- var entries=Array.from(daily.entries()).map(function(e){return {date:e[0],m:metric(e[1])}}).sort(function(a,b){return a.date.localeCompare(b.date)});
- if(!entries.length){months.innerHTML="";grid.innerHTML='<div class="hint">Không tìm thấy ngày hợp lệ. Hãy export dữ liệu theo ngày và kiểm tra mapping cột Date/Reporting starts.</div>';grid.style.gridTemplateColumns="";summary.textContent="Chưa có dữ liệu theo ngày.";note.textContent="";return;}
- var byDate=new Map(entries.map(function(e){return [e.date,e.m]})),first=entries[0].date,last=entries[entries.length-1].date;
- var start=new Date(first+"T12:00:00Z"),end=new Date(last+"T12:00:00Z");
- start.setUTCDate(start.getUTCDate()-((start.getUTCDay()+6)%7));end.setUTCDate(end.getUTCDate()+(6-((end.getUTCDay()+6)%7)));
- var totalDays=Math.round((end-start)/86400000)+1,weeks=Math.ceil(totalDays/7),values=entries.map(function(e){return heatMetricValue(e.m,key)}).filter(function(v){return v>0}).sort(function(a,b){return a-b});
- function quantile(q){if(!values.length)return 0;return values[Math.min(values.length-1,Math.floor((values.length-1)*q))]}
+ var grid=$("hourHeatGrid"),summary=$("heatSummary"),note=$("heatLegendNote"),key=$("heatMetric").value||"leads";
+ var dayNames=["Chủ nhật","Thứ 2","Thứ 3","Thứ 4","Thứ 5","Thứ 6","Thứ 7"],shortDays=["CN","T2","T3","T4","T5","T6","T7"];
+ var hourly=rows.filter(function(r){return r._date&&Number.isInteger(r._hour)&&r._hour>=0&&r._hour<=23;});
+ grid.innerHTML="";
+ if(!hourly.length){
+   grid.innerHTML='<div class="hint" style="grid-column:1/-1;padding:18px;background:#f8fbff;border:1px dashed #cad9eb;border-radius:10px">Chưa tìm thấy dữ liệu theo giờ. File chỉ có ngày không thể suy ra giờ trong ngày. Hãy export lại từ Meta Ads Manager với breakdown <b>Day & hour / Hour of day</b>, hoặc map đúng cột Hour of day ở mục Mapping.</div>';
+   summary.textContent="Chưa có dữ liệu giờ hợp lệ.";
+   note.textContent="Cần export theo giờ để phân tích giờ đăng/phân phối.";
+   return;
+ }
+ var buckets=new Map(),dates=new Set();
+ hourly.forEach(function(r){var dow=new Date(r._date+"T12:00:00Z").getUTCDay(),slot=Math.floor(r._hour/2),k=dow+"-"+slot;if(!buckets.has(k))buckets.set(k,[]);buckets.get(k).push(r);dates.add(r._date);});
+ var cells=[];
+ for(var slot=0;slot<12;slot++)for(var dow=0;dow<7;dow++){var k=dow+"-"+slot,rr=buckets.get(k)||[],m=metric(rr),v=heatMetricValue(m,key);cells.push({dow:dow,slot:slot,rows:rr,m:m,value:v,dates:Array.from(new Set(rr.map(function(r){return r._date;}))).sort()});}
+ var values=cells.map(function(c){return c.value;}).filter(function(v){return v>0;}).sort(function(a,b){return a-b;});
+ function quantile(q){return values.length?values[Math.min(values.length-1,Math.floor((values.length-1)*q))]:0;}
  var cuts=[quantile(.2),quantile(.4),quantile(.6),quantile(.8)];
- function level(v){if(v<=0)return 0;return v<=cuts[0]?1:v<=cuts[1]?2:v<=cuts[2]?3:4}
- grid.style.gridTemplateColumns="repeat("+weeks+",30px)";months.style.gridTemplateColumns="repeat("+weeks+",30px)";grid.innerHTML="";months.innerHTML="";
- var monthSegments=[],prevMonth="",segStart=0;
- for(var col=0;col<weeks;col++){
-   var wd=new Date(start.getTime()+col*7*86400000),mo=wd.getUTCMonth(),yr=wd.getUTCFullYear(),monthKey=yr+"-"+mo;
-   if(!prevMonth){prevMonth=monthKey;segStart=col}
-   if(monthKey!==prevMonth){monthSegments.push({label:new Date(Number(prevMonth.split("-")[0]),Number(prevMonth.split("-")[1]),1).toLocaleDateString("en-US",{month:"short"}),start:segStart,span:col-segStart});prevMonth=monthKey;segStart=col}
- }
- monthSegments.push({label:new Date(Number(prevMonth.split("-")[0]),Number(prevMonth.split("-")[1]),1).toLocaleDateString("en-US",{month:"short"}),start:segStart,span:weeks-segStart});
- monthSegments.forEach(function(s){var el=document.createElement("span");el.textContent=s.label;el.style.gridColumn=(s.start+1)+" / span "+s.span;months.appendChild(el)});
- for(var i=0;i<totalDays;i++){
-   var d=new Date(start.getTime()+i*86400000),ds=d.toISOString().slice(0,10),row=(d.getUTCDay()+6)%7,m=byDate.get(ds),cell=document.createElement("div");
-   if(ds<first||ds>last){cell.className="heat-cell blank";cell.setAttribute("aria-hidden","true");}
-   else if(!m){cell.className="heat-cell no-data";cell.title=ds+" · Không có dòng dữ liệu";cell.setAttribute("aria-label",cell.title);cell.textContent=String(d.getUTCDate());}
-   else{
-     var v=heatMetricValue(m,key),lv=level(v);cell.className="heat-cell heat-level-"+lv+((key==="cpl"||key==="cpc")?" heat-cost":"");cell.textContent=String(d.getUTCDate());cell.title=ds+"\n"+heatMetricLabel(key)+": "+heatMetricFormat(key,v)+"\nSpend: "+cash(m.spend)+"\nLeads: "+fnum(m.leads)+"\nCPL: "+(m.leads?cash(m.cpl):"—")+"\nImpressions: "+fnum(m.imp)+"\nLink clicks: "+fnum(m.clicks);cell.setAttribute("aria-label",cell.title);
+ function lev(v){if(v<=0)return 0;return v<=cuts[0]?1:v<=cuts[1]?2:v<=cuts[2]?3:4;}
+ grid.innerHTML="";
+ var corner=document.createElement("div");corner.className="hour-head";corner.textContent="Giờ";grid.appendChild(corner);
+ shortDays.forEach(function(d,i){var h=document.createElement("div");h.className="hour-head";h.textContent=d;h.title=dayNames[i];grid.appendChild(h);});
+ for(var slot=0;slot<12;slot++){
+   var label=document.createElement("div");label.className="hour-label";label.textContent=String(slot*2).padStart(2,"0")+":00";grid.appendChild(label);
+   for(var day=0;day<7;day++){
+     var cellData=cells.find(function(c){return c.dow===day&&c.slot===slot;}),el=document.createElement("div");
+     if(!cellData.rows.length){el.className="hour-cell no-hour-data";el.textContent="—";el.title=dayNames[day]+" "+String(slot*2).padStart(2,"0")+":00–"+String(slot*2+1).padStart(2,"0")+":59 · Không có dữ liệu";el.setAttribute("aria-label",el.title);}
+     else{var v=cellData.value;el.className="hour-cell heat-level-"+lev(v)+((key==="cpl"||key==="cpc")?" heat-cost":"");el.textContent=heatMetricFormat(key,v);el.title=dayNames[day]+" · "+String(slot*2).padStart(2,"0")+":00–"+String(slot*2+1).padStart(2,"0")+":59\n"+heatMetricLabel(key)+": "+heatMetricFormat(key,v)+"\nNgày có dữ liệu: "+cellData.dates.length+"\nSpend: "+cash(cellData.m.spend)+"\nLeads / Results: "+fnum(cellData.m.leads)+"\nCPL: "+(cellData.m.leads?cash(cellData.m.cpl):"—")+"\nImpressions: "+fnum(cellData.m.imp)+"\nLink clicks: "+fnum(cellData.m.clicks);el.setAttribute("aria-label",el.title);}
+     grid.appendChild(el);
    }
-   grid.appendChild(cell);
  }
- var maxEntry=entries.reduce(function(a,b){return heatMetricValue(a.m,key)>=heatMetricValue(b.m,key)?a:b});var minEntry=entries.reduce(function(a,b){return heatMetricValue(a.m,key)<=heatMetricValue(b.m,key)?a:b});
- summary.innerHTML='<strong>'+entries.length+' ngày có dữ liệu</strong><span>·</span><span>'+first+' → '+last+'</span><span>·</span><span>Max '+heatMetricLabel(key)+': <b>'+heatMetricFormat(key,heatMetricValue(maxEntry.m,key))+'</b> ('+maxEntry.date+')</span>';
- note.textContent=(key==="cpl"||key==="cpc")?"Chi phí cao hơn → màu cam đậm":"Màu đậm = giá trị cao hơn trong khoảng lọc";
+ var max=cells.reduce(function(a,b){return a.value>=b.value?a:b;});
+ summary.innerHTML='<b>'+hourly.length.toLocaleString()+' hourly rows</b><span>·</span><span>'+dates.size+' dates with hour data</span><span>·</span><span>'+heatMetricLabel(key)+': highest '+heatMetricFormat(key,max.value)+' on '+dayNames[max.dow]+' '+String(max.slot*2).padStart(2,"0")+':00</span>';
+ note.textContent=(key==="cpl"||key==="cpc")?"Orange = higher cost":"Blue intensity = higher value";
 }
 
 function insight(rs){var g=groups(rs),by=new Map();g.forEach(function(x){if(!by.has(x.name))by.set(x.name,[]);by.get(x.name).push.apply(by.get(x.name),x.rs)});var all=Array.from(by.entries()).map(function(e){return Object.assign({name:e[0]},metric(e[1]))}),low=all.filter(function(x){return x.leads>0}).sort(function(a,b){return a.cpl-b.cpl})[0],high=all.sort(function(a,b){return b.spend-a.spend})[0],zero=all.filter(function(x){return x.spend>0&&x.leads===0}).sort(function(a,b){return b.spend-a.spend})[0];$("insights").innerHTML='<div class="chart"><b>CPL thấp nhất</b><p>'+(low?esc(low.name)+"<br><strong>"+cash(low.cpl)+"</strong><br>"+fnum(low.leads)+" Leads":"Chưa có Lead")+'</p></div><div class="chart"><b>Chi tiêu cao nhất</b><p>'+(high?esc(high.name)+"<br><strong>"+cash(high.spend)+"</strong><br>"+fnum(high.leads)+" Leads":"Chưa có spend")+'</p></div><div class="chart"><b>Spend nhưng chưa có Lead</b><p>'+(zero?esc(zero.name)+"<br><strong>"+cash(zero.spend)+"</strong><br>Kiểm tra tracking/form":"Không có nhóm phù hợp")+'</p></div>'}
