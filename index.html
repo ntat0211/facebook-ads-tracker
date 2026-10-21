@@ -120,10 +120,10 @@ function date(v){var s=String(v||"").trim(),m=s.match(/^(\d{1,2})[\/.-](\d{1,2})
 function parseHour(hourValue,dateValue){
  function fromText(value){
   var s=String(value==null?"":value).trim();if(!s)return null;
-  var ap=s.match(/(?:^|[^\\d])(1[0-2]|0?\\d)(?::[0-5]\\d)?\\s*(AM|PM)\\b/i);
+  var ap=s.match(/(?:^|[^\d])(1[0-2]|0?\d)(?::[0-5]\d)?\s*(AM|PM)\b/i);
   if(ap){var h=Number(ap[1])%12;if(ap[2].toUpperCase()==="PM")h+=12;return h;}
-  if(/^(?:[01]?\\d|2[0-3])$/.test(s))return Number(s);
-  var tm=s.match(/(?:^|[T,\\s])([01]?\\d|2[0-3]):([0-5]\\d)(?::[0-5]\\d)?\\b/);
+  if(/^(?:[01]?\d|2[0-3])$/.test(s))return Number(s);
+  var tm=s.match(/(?:^|[T,\s])([01]?\d|2[0-3]):([0-5]\d)(?::[0-5]\d)?\b/);
   if(tm)return Number(tm[1]);
   return null;
  }
