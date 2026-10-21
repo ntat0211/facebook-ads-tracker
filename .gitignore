@@ -1,0 +1,8 @@
+# Keep exported ad reports and local data out of Git
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.json
+.env
+.DS_Store
