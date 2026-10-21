@@ -100,7 +100,7 @@ button{font-family:inherit;font-size:11px;font-weight:700;border-radius:10px;pad
 var $=function(id){return document.getElementById(id)},S={headers:[],raw:[],map:{},cur:""};
 var F=[
 ["date","Ngày báo cáo",["reporting starts","date","day","start date","ngày bắt đầu","day & hour","day and hour"]],
-["hour","Hour of day",["hour","hour of day","day & hour","day and hour","time of day","hourly"]],
+["hour","Hour of day",["hour","hour of day","day & hour","day and hour","time of day","hourly","start time","time","hour (account time zone)"]],
 ["campaign","Campaign name",["campaign name","campaign","tên chiến dịch"]],
 ["objective","Campaign objective",["campaign objective","objective","mục tiêu chiến dịch","mục tiêu"]],
 ["adset","Ad set name",["ad set name","adset name","ad set","nhóm quảng cáo"]],
@@ -115,7 +115,16 @@ var F=[
 ];
 function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim()}
 function parseCSV(s){s=s.replace(/^\uFEFF/,"");var first=s.split(/\r?\n/)[0]||"",sep=(first.match(/\t/g)||[]).length>(first.match(/,/g)||[]).length?"\t":",",out=[],row=[],cell="",q=false;for(var i=0;i<s.length;i++){var c=s[i];if(c==='"'){if(q&&s[i+1]==='"'){cell+='"';i++}else q=!q}else if(c===sep&&!q){row.push(cell);cell=""}else if((c==="\n"||c==="\r")&&!q){if(c==="\r"&&s[i+1]==="\n")i++;row.push(cell);if(row.some(function(x){return x.trim()}))out.push(row);row=[];cell=""}else cell+=c}row.push(cell);if(row.some(function(x){return x.trim()}))out.push(row);return out}
-function date(v){var s=String(v||"").trim(),m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);if(m)return (m[3].length===2?"20"+m[3]:m[3])+"-"+m[1].padStart(2,"0")+"-"+m[2].padStart(2,"0");var d=new Date(s);return isNaN(d)?"":d.toISOString().slice(0,10)}
+function date(v){
+ if(v instanceof Date&&!isNaN(v))return v.getFullYear()+"-"+String(v.getMonth()+1).padStart(2,"0")+"-"+String(v.getDate()).padStart(2,"0");
+ var s=String(v||"").trim();if(!s)return "";
+ var iso=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);if(iso)return iso[1]+"-"+iso[2].padStart(2,"0")+"-"+iso[3].padStart(2,"0");
+ var m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})(?=$|[T,\s])/);if(m)return (m[3].length===2?"20"+m[3]:m[3])+"-"+m[1].padStart(2,"0")+"-"+m[2].padStart(2,"0");
+ var months={jan:1,january:1,feb:2,february:2,mar:3,march:3,apr:4,april:4,may:5,jun:6,june:6,jul:7,july:7,aug:8,august:8,sep:9,sept:9,september:9,oct:10,october:10,nov:11,november:11,dec:12,december:12};
+ var text=s.match(/^(?:(?:sun|mon|tue|wed|thu|fri|sat)(?:day)?[, ]+)?([a-z]+)\s+(\d{1,2}),?\s+(\d{4})/i);
+ if(text&&months[text[1].toLowerCase()])return text[3]+"-"+String(months[text[1].toLowerCase()]).padStart(2,"0")+"-"+text[2].padStart(2,"0");
+ var d=new Date(s);return isNaN(d)?"":d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
 
 function parseHour(hourValue,dateValue){
  function fromText(value){
