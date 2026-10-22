@@ -119,7 +119,7 @@ var F=[
 ["impressions","Impressions",["impressions","lượt hiển thị"]],
 ["reach","Reach",["reach","phạm vi tiếp cận"]],
 ["clicks","Link clicks",["link clicks","outbound clicks","lượt nhấp liên kết"]],
-["ctr","CTR link",["ctr (link click-through rate)","link ctr","ctr (link)"]],
+["ctr","CTR from Meta export",["ctr (all)","ctr (all click-through rate)","ctr (link click-through rate)","link ctr","ctr (link)","ctr"]],
 ["cpc","CPC link",["cost per link click","cpc (link)"]],
 ["leads","Leads / Results",["website leads","onsite leads","instant form leads","on-facebook leads","leads","lead","results","result","kết quả"]]
 ];
@@ -197,6 +197,7 @@ function findAccountSummaryRow(rows,headers){
   spend:colByNames(["Amount spent (VND)","Amount spent","Spend"]),
   leads:colByNames(["Leads","Website leads","On-Facebook leads"]),
   clicks:colByNames(["Link clicks"]),
+  ctr:colByNames(["CTR (all)","CTR (link click-through rate)","CTR"]),
   messages:colByNames(["New messaging contacts"]),
   start:colByNames(["Reporting starts"]),
   end:colByNames(["Reporting ends"])
@@ -211,7 +212,7 @@ function findAccountSummaryRow(rows,headers){
   var metrics=[cols.reach,cols.impressions,cols.frequency,cols.spend,cols.leads,cols.clicks,cols.messages].map(function(h){return readNum(row,h);});
   var populated=metrics.filter(function(v){return v!==null;}).length;
   if((labelled&&populated>=2)||(blankDims&&populated>=4&&readNum(row,cols.reach)!==null&&readNum(row,cols.impressions)!==null)){
-   return {row:row,reach:readNum(row,cols.reach),impressions:readNum(row,cols.impressions),frequency:readNum(row,cols.frequency),spend:readNum(row,cols.spend),leads:readNum(row,cols.leads),clicks:readNum(row,cols.clicks),messages:readNum(row,cols.messages),start:cols.start?date(row[cols.start]):"",end:cols.end?date(row[cols.end]):"",source:"Meta account summary row"};
+   return {row:row,reach:readNum(row,cols.reach),impressions:readNum(row,cols.impressions),frequency:readNum(row,cols.frequency),spend:readNum(row,cols.spend),leads:readNum(row,cols.leads),clicks:readNum(row,cols.clicks),ctr:readNum(row,cols.ctr),messages:readNum(row,cols.messages),start:cols.start?date(row[cols.start]):"",end:cols.end?date(row[cols.end]):"",source:"Meta account summary row"};
   }
  }
  return null;
@@ -258,14 +259,40 @@ function fill(id,vals){var e=$(id),old=e.value;e.innerHTML='<option value="">T�
 function buildFilters(){fill("campaign",Array.from(new Set(S.raw.map(function(r){return r._campaign}))).sort());subs()}
 function subs(){var c=$("campaign").value,rs=S.raw.filter(function(r){return !c||r._campaign===c});fill("adset",Array.from(new Set(rs.map(function(r){return r._adset}))).sort());rs=rs.filter(function(r){return !$("adset").value||r._adset===$("adset").value});fill("ad",Array.from(new Set(rs.map(function(r){return r._ad}))).sort())}
 function filtered(){var f=$("from").value,t=$("to").value,c=$("campaign").value,a=$("adset").value,ad=$("ad").value;return S.raw.filter(function(r){return (!f||!r._date||r._date>=f)&&(!t||!r._date||r._date<=t)&&(!c||r._campaign===c)&&(!a||r._adset===a)&&(!ad||r._ad===ad)})}
-function metric(rs){var m={spend:0,leads:0,imp:0,reach:null,reachAvailable:false,clicks:0};rs.forEach(function(r){m.spend+=n(r[S.map.spend]);m.leads+=n(r[S.map.leads]);m.imp+=n(r[S.map.impressions]);m.clicks+=n(r[S.map.clicks])});
+function metric(rs){
+ var m={spend:0,leads:0,imp:0,reach:null,reachAvailable:false,clicks:0,ctr:null};
+ var weightedCtr=0,ctrWeight=0,unweightedCtr=0,ctrCount=0;
+ rs.forEach(function(r){
+  m.spend+=n(r[S.map.spend]);m.leads+=n(r[S.map.leads]);m.imp+=n(r[S.map.impressions]);m.clicks+=n(r[S.map.clicks]);
+  // CTR values are already reported by Meta as percentages (e.g. 1.298 means 1.298%).
+  // Do not recalculate CTR from Link clicks / Impressions.
+  var rawCtr=S.map.ctr?r[S.map.ctr]:null;
+  if(rawCtr!==null&&rawCtr!==undefined&&String(rawCtr).trim()!==""){
+   var cv=n(rawCtr);
+   if(isFinite(cv)){
+    var iw=n(r[S.map.impressions]);
+    if(iw>0){weightedCtr+=cv*iw;ctrWeight+=iw;}
+    unweightedCtr+=cv;ctrCount++;
+   }
+  }
+ });
+ if(ctrWeight>0)m.ctr=weightedCtr/ctrWeight;
+ else if(ctrCount>0)m.ctr=unweightedCtr/ctrCount;
  // Reach is deduplicated by Meta and cannot be summed across ads or dates.
  if(rs.length===1 && S.map.reach && rs[0][S.map.reach]!==null && rs[0][S.map.reach]!==undefined && String(rs[0][S.map.reach]).trim()!=="" && isFinite(n(rs[0][S.map.reach]))){m.reach=n(rs[0][S.map.reach]);m.reachAvailable=true;}
- m.cpl=m.leads?m.spend/m.leads:0;m.ctr=m.imp?100*m.clicks/m.imp:0;m.cpc=m.clicks?m.spend/m.clicks:0;m.cpm=m.imp?1000*m.spend/m.imp:0;m.freq=m.reachAvailable&&m.reach>0?m.imp/m.reach:null;return m}
+ m.cpl=m.leads?m.spend/m.leads:0;m.cpc=m.clicks?m.spend/m.clicks:0;m.cpm=m.imp?1000*m.spend/m.imp:0;m.freq=m.reachAvailable&&m.reach>0?m.imp/m.reach:null;return m
+}
 function week(d){var x=new Date(d+"T12:00:00Z");x.setUTCDate(x.getUTCDate()-((x.getUTCDay()+6)%7));return x.toISOString().slice(0,10)}
 function ts(rs){var map=new Map();rs.forEach(function(r){var d=r._date||"No date";if($("period").value==="week"&&d!=="No date")d=week(d);if(!map.has(d))map.set(d,[]);map.get(d).push(r)});return Array.from(map.entries()).map(function(e){return Object.assign({date:e[0]},metric(e[1]))}).sort(function(a,b){return a.date.localeCompare(b.date)})}
 function groups(rs){var map=new Map(),level=$("level").value;rs.forEach(function(r){var nm=level==="campaign"?r._campaign:level==="adset"?r._adset:r._ad,d=r._date||"No date";if($("period").value==="week"&&d!=="No date")d=week(d);var k=nm+"|"+d;if(!map.has(k))map.set(k,{name:nm,date:d,rs:[]});map.get(k).rs.push(r)});return Array.from(map.values()).map(function(g){return Object.assign(g,metric(g.rs))})}
 function kpi(a,b,c){return '<div class="kpi"><small>'+a+'</small><strong>'+b+'</strong><small>'+c+'</small></div>'}
+function ctrLabel(){
+ var c=String(S.map.ctr||"");
+ if(/ctr\s*\(\s*all\s*\)/i.test(c))return "CTR (all)";
+ if(/link/i.test(c))return "CTR link";
+ return c?"CTR (export)":"CTR (export unavailable)";
+}
+
 function render(){
  if(!S.raw.length)return;
  var rs=filtered(),m=metric(rs);
@@ -283,6 +310,7 @@ function render(){
   if(S.accountSummary.impressions!==null)m.imp=S.accountSummary.impressions;
   if(S.accountSummary.leads!==null)m.leads=S.accountSummary.leads;
   if(S.accountSummary.clicks!==null)m.clicks=S.accountSummary.clicks;
+  if(S.accountSummary.ctr!==null)m.ctr=S.accountSummary.ctr;
   accountReach=enteredReach!==null?enteredReach:S.accountSummary.reach;
   if(accountReach!==null&&accountReach===S.accountSummary.reach&&S.accountSummary.frequency!==null)accountFrequency=S.accountSummary.frequency;
   else if(accountReach!==null&&m.imp>0)accountFrequency=m.imp/accountReach;
@@ -297,7 +325,7 @@ function render(){
  $("kpis").innerHTML=kpi("Spend",cash(m.spend),"Tổng chi tiêu")+
  kpi("Leads",fnum(m.leads),"Theo cột Lead đã map")+
  kpi("Cost per Lead",m.leads?cash(m.spend/m.leads):"—","Spend / Leads")+
- kpi("CTR link",fnum(m.imp?100*m.clicks/m.imp:0,2)+"%","Link clicks / Impressions")+
+ kpi(ctrLabel(),m.ctr!==null?fnum(m.ctr,2)+"%":"N/A","Lấy trực tiếp từ cột "+(S.map.ctr||"CTR chưa được map"))+
  kpi("Link clicks",fnum(m.clicks),"Tổng click")+
  kpi("CPC link",cash(m.clicks?m.spend/m.clicks:0),"Spend / Clicks")+
  kpi("Impressions",fnum(m.imp),"Tổng lượt hiển thị")+
@@ -308,7 +336,7 @@ function render(){
  pie("spie",obj(rs,"spend"),"Spend");pie("lpie",obj(rs,"leads"),"Leads");
  dual("trend",t.map(function(x){return x.spend}),t.map(function(x){return x.leads}),t.map(function(x){return x.date}),"Spend","Leads");
  line("cpl",t.map(function(x){return x.leads?x.cpl:null}),t.map(function(x){return x.date}),"CPL");
- dual("clicktrend",t.map(function(x){return x.ctr}),t.map(function(x){return x.cpc}),t.map(function(x){return x.date}),"CTR %","CPC");
+ dual("clicktrend",t.map(function(x){return x.ctr===null?0:x.ctr}),t.map(function(x){return x.cpc}),t.map(function(x){return x.date}),ctrLabel(),"CPC");
  if(t.length&&t.every(function(x){return x.reachAvailable;})){dual("reachtrend",t.map(function(x){return x.imp}),t.map(function(x){return x.reach}),t.map(function(x){return x.date}),"Impressions","Reach");}
  else{line("reachtrend",t.map(function(x){return x.imp}),t.map(function(x){return x.date}),"Impressions");var rc=$("reachtrend").getContext("2d");rc.fillStyle="#d97706";rc.font="10px Montserrat, Arial, sans-serif";rc.fillText("Account Reach lives in Meta Summary row",55,36);}
  drawHeatmap(rs);insight(rs);table(rs);
@@ -324,7 +352,7 @@ function heatmapMetricValue(m,key){return key==="spend"?m.spend:key==="leads"?m.
 
 function heatMetricValue(m,key){return key==="spend"?m.spend:key==="leads"?m.leads:key==="cpl"?m.cpl:key==="imp"?m.imp:key==="reach"?m.reach:key==="clicks"?m.clicks:key==="ctr"?m.ctr:key==="cpc"?m.cpc:0}
 function heatMetricLabel(key){return ({spend:"Spend",leads:"Leads / Results",cpl:"CPL",imp:"Impressions",reach:"Reach",clicks:"Link clicks",ctr:"CTR link",cpc:"CPC link"})[key]||key}
-function heatMetricFormat(key,v){if(key==="spend"||key==="cpl"||key==="cpc")return cash(v);if(key==="ctr")return fnum(v,2)+"%";return fnum(v)}
+function heatMetricFormat(key,v){if(v===null||v===undefined)return "N/A";if(key==="spend"||key==="cpl"||key==="cpc")return cash(v);if(key==="ctr")return fnum(v,2)+"%";return fnum(v)}
 function drawHeatmap(rows){
  var grid=$("hourHeatGrid"),summary=$("heatSummary"),note=$("heatLegendNote"),key=$("heatMetric").value||"leads";
  var dayNames=["Chủ nhật","Thứ 2","Thứ 3","Thứ 4","Thứ 5","Thứ 6","Thứ 7"],shortDays=["CN","T2","T3","T4","T5","T6","T7"];
@@ -362,7 +390,7 @@ function drawHeatmap(rows){
 }
 
 function insight(rs){var g=groups(rs),by=new Map();g.forEach(function(x){if(!by.has(x.name))by.set(x.name,[]);by.get(x.name).push.apply(by.get(x.name),x.rs)});var all=Array.from(by.entries()).map(function(e){return Object.assign({name:e[0]},metric(e[1]))}),low=all.filter(function(x){return x.leads>0}).sort(function(a,b){return a.cpl-b.cpl})[0],high=all.sort(function(a,b){return b.spend-a.spend})[0],zero=all.filter(function(x){return x.spend>0&&x.leads===0}).sort(function(a,b){return b.spend-a.spend})[0];$("insights").innerHTML='<div class="chart"><b>CPL thấp nhất</b><p>'+(low?esc(low.name)+"<br><strong>"+cash(low.cpl)+"</strong><br>"+fnum(low.leads)+" Leads":"Chưa có Lead")+'</p></div><div class="chart"><b>Chi tiêu cao nhất</b><p>'+(high?esc(high.name)+"<br><strong>"+cash(high.spend)+"</strong><br>"+fnum(high.leads)+" Leads":"Chưa có spend")+'</p></div><div class="chart"><b>Spend nhưng chưa có Lead</b><p>'+(zero?esc(zero.name)+"<br><strong>"+cash(zero.spend)+"</strong><br>Kiểm tra tracking/form":"Không có nhóm phù hợp")+'</p></div>'}
-function table(rs){var g=groups(rs),q=$("search").value.toLowerCase(),key=$("sort").value,dir=$("dir").value;g=g.filter(function(x){return x.name.toLowerCase().indexOf(q)>=0});g.sort(function(a,b){var av=key==="cpl"?(a.leads?a.cpl:Infinity):a[key]||0,bv=key==="cpl"?(b.leads?b.cpl:Infinity):b[key]||0;return (av-bv)*(dir==="asc"?1:-1)});var h=["Tên nhóm","Kỳ","Spend","Leads","CPL","Impressions","Reach","Link clicks","CTR link","CPC link","CPM"];$("table").querySelector("thead").innerHTML="<tr>"+h.map(function(x){return "<th>"+x+"</th>"}).join("")+"</tr>";$("table").querySelector("tbody").innerHTML=g.slice(0,1000).map(function(x){return "<tr><td>"+esc(x.name)+"</td><td>"+esc(x.date)+"</td><td>"+cash(x.spend)+"</td><td>"+fnum(x.leads)+"</td><td>"+(x.leads?cash(x.cpl):"—")+"</td><td>"+fnum(x.imp)+"</td><td>"+(x.reachAvailable?fnum(x.reach):"N/A")+"</td><td>"+fnum(x.clicks)+"</td><td>"+fnum(x.ctr,2)+"%</td><td>"+cash(x.cpc)+"</td><td>"+cash(x.cpm)+"</td></tr>"}).join("")||'<tr><td colspan="11">Không có dữ liệu phù hợp</td></tr>';$("tableNote").textContent=g.length+" dòng tổng hợp · theo "+$("level").selectedOptions[0].text+" · "+$("period").selectedOptions[0].text}
+function table(rs){var g=groups(rs),q=$("search").value.toLowerCase(),key=$("sort").value,dir=$("dir").value;g=g.filter(function(x){return x.name.toLowerCase().indexOf(q)>=0});g.sort(function(a,b){var av=key==="cpl"?(a.leads?a.cpl:Infinity):a[key]||0,bv=key==="cpl"?(b.leads?b.cpl:Infinity):b[key]||0;return (av-bv)*(dir==="asc"?1:-1)});var h=["Tên nhóm","Kỳ","Spend","Leads","CPL","Impressions","Reach","Link clicks",ctrLabel(),"CPC link","CPM"];$("table").querySelector("thead").innerHTML="<tr>"+h.map(function(x){return "<th>"+x+"</th>"}).join("")+"</tr>";$("table").querySelector("tbody").innerHTML=g.slice(0,1000).map(function(x){return "<tr><td>"+esc(x.name)+"</td><td>"+esc(x.date)+"</td><td>"+cash(x.spend)+"</td><td>"+fnum(x.leads)+"</td><td>"+(x.leads?cash(x.cpl):"—")+"</td><td>"+fnum(x.imp)+"</td><td>"+(x.reachAvailable?fnum(x.reach):"N/A")+"</td><td>"+fnum(x.clicks)+"</td><td>"+(x.ctr!==null?fnum(x.ctr,2)+"%":"—")+"</td><td>"+cash(x.cpc)+"</td><td>"+cash(x.cpm)+"</td></tr>"}).join("")||'<tr><td colspan="11">Không có dữ liệu phù hợp</td></tr>';$("tableNote").textContent=g.length+" dòng tổng hợp · theo "+$("level").selectedOptions[0].text+" · "+$("period").selectedOptions[0].text}
 function exportCSV(){var g=groups(filtered()),h=["Name","Period","Spend","Leads","CPL","Impressions","Reach","Link clicks","CTR (%)","CPC","CPM"],rows=[h].concat(g.map(function(x){return [x.name,x.date,x.spend,x.leads,x.leads?x.cpl:"",x.imp,x.reach,x.clicks,x.ctr,x.cpc,x.cpm]})),csv=rows.map(function(r){return r.map(function(v){return '"'+String(v==null?"":v).replace(/"/g,'""')+'"'}).join(",")}).join("\r\n"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}));a.download="facebook-ads-performance.csv";a.click()}
 $("file").addEventListener("change",async function(e){var f=e.target.files[0];if(!f)return;try{var ext=f.name.split(".").pop().toLowerCase();if(ext==="csv"||ext==="tsv"||ext==="txt"){var a=parseCSV(await f.text()),h=a[0].map(function(x){return x.trim()}),o=a.slice(1).map(function(r){var z={};h.forEach(function(k,i){z[k]=r[i]||""});return z});load(h,o)}else{if(!window.XLSX)throw Error("Chưa tải được thư viện Excel; hãy thử CSV hoặc kiểm tra kết nối.");var wb=XLSX.read(await f.arrayBuffer(),{type:"array",cellDates:true}),o=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:""});load(Object.keys(o[0]),o)}}catch(err){msg("Lỗi: "+err.message,"warn")}});
 $("demo").onclick=function(){var h=["Reporting starts","Campaign name","Campaign objective","Ad set name","Ad name","Amount spent (USD)","Impressions","Reach","Link clicks","Website leads"],o=[];for(var i=0;i<42;i++){var d=new Date();d.setUTCDate(d.getUTCDate()-41+i);var c=i%4===0?"Awareness Brand":i%3?"J-1 Intern":"EB-3 Skilled",im=1600+i*85,cl=20+(i%8)*5,sp=18+(i%7)*6;o.push({"Reporting starts":d.toISOString().slice(0,10),"Campaign name":c,"Campaign objective":i%4===0?"Awareness":"Lead Generation","Ad set name":i%2?"Interest - Marketing":"Lookalike - Leads","Ad name":"Creative "+(i%4+1),"Amount spent (USD)":sp,"Impressions":im,"Reach":Math.round(im*.7),"Link clicks":cl,"Website leads":i%6===0?0:Math.max(1,Math.round(cl/8))})}load(h,o)};
