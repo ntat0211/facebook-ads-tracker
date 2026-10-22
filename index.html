@@ -146,7 +146,27 @@ function fnum(v,d){return Number(v||0).toLocaleString("en-US",{minimumFractionDi
 function curr(){return $("currency").value==="auto"?(S.cur||"other"):$("currency").value}
 function cash(v){var c=curr(),sym={USD:"$",VND:"₫",CAD:"C$",AUD:"A$",EUR:"€",GBP:"£",SGD:"S$",other:""};return (sym[c]||"")+fnum(v,c==="VND"?0:2)}
 function infer(raw,camp){if(raw)return String(raw);var s=String(camp||"").toLowerCase();if(/awareness|reach|brand|nhan dien/.test(s))return "Awareness (suy luận)";if(/traffic|click/.test(s))return "Traffic (suy luận)";if(/lead|form|messag|conversation/.test(s))return "Lead Generation (suy luận)";if(/sales|purchase|conversion/.test(s))return "Sales (suy luận)";return "Unknown"}
-function load(head,objs){S.headers=head;S.map={};F.forEach(function(f){var h=null;for(var ai=0;ai<f[2].length&&!h;ai++){var alias=f[2][ai];h=head.find(function(x){return norm(x)===norm(alias)});}if(!h&&f[0]==="leads")h=head.find(function(x){return /lead/i.test(x)&&!/cost|rate|value/i.test(x)});S.map[f[0]]=h||""});var m=head.join(" ").toUpperCase().match(/AMOUNT SPENT\s*\((USD|VND|CAD|AUD|EUR|GBP|SGD)\)/);S.cur=m?m[1]:"";S.raw=objs.map(function(o){var c=o[S.map.campaign]||"(Campaign không rõ)";return Object.assign({},o,{_date:date(o[S.map.date]),_hour:parseHour(o[S.map.hour],o[S.map.date]),_campaign:String(c),_objective:infer(o[S.map.objective],c),_adset:String(o[S.map.adset]||"(Ad Set không rõ)"),_ad:String(o[S.map.ad]||"(Ad không rõ)")})});buildMap();buildFilters();$("mapBtn").disabled=false;$("export").disabled=false;msg("Đã nạp "+objs.length+" dòng. Kiểm tra mapping Lead và đơn vị tiền tệ trước khi dùng báo cáo.",S.map.spend&&S.map.leads?"ok":"warn");$("mapnote").textContent="Currency tự nhận diện: "+(S.cur||"không rõ")+". Nếu tên cột không ghi tiền tệ, hãy tự chọn đúng currency của ad account.";render()}
+function isAggregateSummaryRow(row,headers){
+ var markers=/^(summary|summary row|total|grand total|total results|overall|overall total|campaign total|ad set total|adset total|ad total|account total|report total|results summary|all campaigns)$/i;
+ var normVals=headers.map(function(h){return String(row[h]==null?"":row[h]).trim();});
+ // Explicit summary/total labels are never detail records.
+ for(var i=0;i<headers.length;i++){
+  var v=norm(normVals[i]);
+  if(markers.test(v))return true;
+ }
+ // If the export contains an hourly breakdown column, aggregate rows without
+ // a date or an hour are roll-up rows, not hourly detail. Exclude them so
+ // totals are not added on top of their underlying hourly records.
+ var dayCol=headers.find(function(h){return /^(day|date|reporting starts|start date|ngay bao cao)$/.test(norm(h));});
+ var hourCol=headers.find(function(h){return /^(time of day.*|hour of day|hourly|day and hour|day hour)$/.test(norm(h));});
+ if(hourCol){
+  var dayValue=dayCol?String(row[dayCol]==null?"":row[dayCol]).trim():"";
+  var hourValue=String(row[hourCol]==null?"":row[hourCol]).trim();
+  if(!dayValue||!hourValue)return true;
+ }
+ return false;
+}
+function load(head,objs){var originalCount=objs.length;objs=objs.filter(function(row){return !isAggregateSummaryRow(row,head);});var skippedCount=originalCount-objs.length;S.headers=head;S.map={};F.forEach(function(f){var h=null;for(var ai=0;ai<f[2].length&&!h;ai++){var alias=f[2][ai];h=head.find(function(x){return norm(x)===norm(alias)});}if(!h&&f[0]==="leads")h=head.find(function(x){return /lead/i.test(x)&&!/cost|rate|value/i.test(x)});S.map[f[0]]=h||""});var m=head.join(" ").toUpperCase().match(/AMOUNT SPENT\s*\((USD|VND|CAD|AUD|EUR|GBP|SGD)\)/);S.cur=m?m[1]:"";S.raw=objs.map(function(o){var c=o[S.map.campaign]||"(Campaign không rõ)";return Object.assign({},o,{_date:date(o[S.map.date]),_hour:parseHour(o[S.map.hour],o[S.map.date]),_campaign:String(c),_objective:infer(o[S.map.objective],c),_adset:String(o[S.map.adset]||"(Ad Set không rõ)"),_ad:String(o[S.map.ad]||"(Ad không rõ)")})});buildMap();buildFilters();$("mapBtn").disabled=false;$("export").disabled=false;msg("Đã nạp "+objs.length+" dòng chi tiết"+(skippedCount?" · đã loại "+skippedCount+" dòng Summary/tổng hợp để tránh cộng trùng":"")+". Kiểm tra mapping Lead và đơn vị tiền tệ trước khi dùng báo cáo.",S.map.spend&&S.map.leads?"ok":"warn");$("mapnote").textContent="Currency tự nhận diện: "+(S.cur||"không rõ")+". Nếu tên cột không ghi tiền tệ, hãy tự chọn đúng currency của ad account.";render()}
 function msg(s,c){$("status").textContent=s;$("status").className="status "+(c||"")}
 function buildMap(){ $("mapping").innerHTML=F.map(function(f){return '<label>'+f[1]+'<select data-k="'+f[0]+'"><option value="">— không dùng —</option>'+S.headers.map(function(h){return '<option '+(h===S.map[f[0]]?"selected":"")+' value="'+esc(h)+'">'+esc(h)+'</option>'}).join("")+'</select></label>'}).join("")}
 function applyMap(){document.querySelectorAll("[data-k]").forEach(function(el){S.map[el.dataset.k]=el.value});S.raw=S.raw.map(function(r){var c=r[S.map.campaign]||"(Campaign không rõ)";r._date=date(r[S.map.date]);r._hour=parseHour(r[S.map.hour],r[S.map.date]);r._campaign=String(c);r._objective=infer(r[S.map.objective],c);r._adset=String(r[S.map.adset]||"(Ad Set không rõ)");r._ad=String(r[S.map.ad]||"(Ad không rõ)");return r});buildFilters();render();msg("Đã áp dụng mapping — đối chiếu Spend và Leads với Ads Manager.","ok")}
