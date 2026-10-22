@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Facebook Ads Tracker Pro</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Facebook Ads Tracker Pro</title>
 <style>
 :root{--bg:#f4f6fa;--card:#fff;--ink:#172033;--muted:#667085;--line:#e3e8ef;--blue:#2878f0;--green:#087f5b;--red:#c0392b}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}main{max-width:1400px;margin:auto;padding:22px}h1{font-size:27px;margin:0}h2{font-size:17px;margin:0 0 13px}h3{font-size:14px;margin:0 0 8px}.muted,.hint{color:var(--muted);font-size:12px}.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}.row,.filters,.top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.top{justify-content:space-between}.filebox{flex:1;min-width:230px;border:1px dashed #bbc6d7;border-radius:10px;padding:12px}button{border:0;border-radius:9px;padding:10px 13px;background:var(--blue);color:white;font-weight:650;cursor:pointer}button.alt{background:#eef2ff;color:#2943a3}input,select{border:1px solid #cfd6e0;border-radius:8px;padding:9px 10px;background:white;color:var(--ink);max-width:100%}label{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:4px}.filters{align-items:end;margin-top:12px}.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.kpi,.chart{border:1px solid var(--line);border-radius:12px;padding:13px;min-width:0}.kpi small{display:block;color:var(--muted)}.kpi strong{display:block;font-size:23px;overflow-wrap:anywhere}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.chart canvas{width:100%;height:230px;display:block}.status{font-size:12px;font-weight:650;margin-top:10px}.ok{color:var(--green)}.warn{color:#9a6700}.mapping{display:grid;grid-template-columns:repeat(4,minmax(145px,1fr));gap:10px}.mapping select{width:100%}.tablewrap{overflow:auto;max-height:520px;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}th,td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:right}th{position:sticky;top:0;background:#f8fafc}th:first-child,td:first-child{text-align:left}.note{background:#eff6ff;border-radius:9px;padding:12px;color:#24458d;font-size:12px}@media(max-width:850px){main{padding:12px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:1fr}.mapping{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
@@ -61,6 +61,15 @@ button{font-family:inherit;font-size:11px;font-weight:700;border-radius:10px;pad
 .hour-cell.heat-level-0{background:#f0f6ff;color:#7089a9}.hour-cell.heat-level-1{background:#d8e8ff;color:#45678f}.hour-cell.heat-level-2{background:#a9ceff;color:#234f85}.hour-cell.heat-level-3{background:#6ba7fb;color:#123c79}.hour-cell.heat-level-4{background:#2878f0;color:#fff}
 .hour-cell.heat-cost.heat-level-0{background:#fff6ed;color:#9b7b61}.hour-cell.heat-cost.heat-level-1{background:#ffe5ce;color:#92562c}.hour-cell.heat-cost.heat-level-2{background:#ffc18d;color:#763e18}.hour-cell.heat-cost.heat-level-3{background:#ff9a4a;color:#63300a}.hour-cell.heat-cost.heat-level-4{background:#e96d19;color:#fff}
 .hour-cell.no-hour-data{background:#f8fafc;border:1px dashed #dfe8f2;color:#bac5d4}
+
+.chart{position:relative}
+.chart-hover-tooltip{display:none;position:absolute;z-index:20;min-width:185px;max-width:235px;padding:11px 12px;background:rgba(255,255,255,.98);border:1px solid #dce6f3;border-radius:11px;box-shadow:0 8px 25px #1a35551c;pointer-events:none;color:#183252;font:11px/1.55 'Montserrat',Arial,sans-serif}
+.chart-hover-date{font-weight:800;font-size:11px;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid #edf2f8}
+.chart-hover-row{display:flex;align-items:flex-start;gap:6px;margin:3px 0}
+.chart-hover-dot{width:7px;height:7px;min-width:7px;border-radius:50%;margin-top:5px}
+.chart-hover-name{color:#667b95}
+.chart-hover-value{font-weight:750;margin-left:auto;padding-left:8px;text-align:right}
+.chart-hover-guide{display:none;position:absolute;z-index:5;top:45px;bottom:34px;width:1px;background:#7c94b3;opacity:.65;pointer-events:none}
 </style></head><body><div class="app-shell">
 <aside class="sidebar">
   <div class="brand"><div class="brand-mark">▥</div><div class="brand-name">Facebook Ads<br>Tracker Pro</div></div>
@@ -78,50 +87,50 @@ button{font-family:inherit;font-size:11px;font-weight:700;border-radius:10px;pad
 </aside>
 <main class="main-content">
 <div class="top page-header" id="overview"><div><div class="page-kicker">AD PERFORMANCE WORKSPACE</div><h1>Overview</h1><div class="muted">Key performance metrics and trends from your Facebook Ads data.</div></div><div class="period-note">▣ &nbsp; Lead Generation · Daily & Weekly</div></div>
-<section class="panel" id="upload-panel"><h2>1. Nạp báo cáo Meta Ads</h2><div class="row"><div class="filebox"><input id="file" type="file" accept=".csv,.tsv,.txt,.xlsx,.xls"><div class="hint">Ưu tiên CSV. Excel cần internet để tải thư viện đọc file.</div></div><button id="demo" class="alt">Dữ liệu mẫu</button><button id="export" class="alt" disabled>Xuất CSV</button><button id="clear" class="alt">Xóa data</button></div><div id="status" class="status">Upload file export từ Ads Manager để bắt đầu.</div><div class="hint">Nên export theo ngày, gồm Campaign name, Campaign objective, Ad set name, Ad name, Amount spent, Impressions, Reach, Link clicks và cột Lead cụ thể.</div></section>
-<section class="panel" id="filters"><div class="top"><h2>2. Bộ lọc & cách xem</h2><div class="row"><label>Gom theo<select id="period"><option value="day">Ngày</option><option value="week">Tuần (T2–CN)</option></select></label><label>Currency<select id="currency"><option value="auto">Tự nhận diện</option><option>USD</option><option>VND</option><option>CAD</option><option>AUD</option><option>EUR</option><option>GBP</option><option>SGD</option><option value="other">Khác</option></select></label><label>Cấp phân tích<select id="level"><option value="campaign">Campaign</option><option value="adset">Ad Set</option><option value="ad">Ads</option></select></label></div></div><div class="filters"><label>Từ ngày<input id="from" type="date"></label><label>Đến ngày<input id="to" type="date"></label><label>Campaign<select id="campaign"><option value="">Tất cả</option></select></label><label>Ad Set<select id="adset"><option value="">Tất cả</option></select></label><label>Ad<select id="ad"><option value="">Tất cả</option></select></label><button id="reset" class="alt">Reset</button></div></section>
-<section class="panel" id="settings"><div class="top"><h2>3. Mapping cột dữ liệu</h2><button id="mapBtn" class="alt" disabled>Áp dụng mapping</button></div><div id="mapping" class="mapping"></div><div id="mapnote" class="hint"></div></section>
-<section class="panel"><h2>4. KPI tổng quan</h2>
+<section class="panel" id="upload-panel"><h2>1. Import Meta Ads Report</h2><div class="row"><div class="filebox"><input id="file" type="file" accept=".csv,.tsv,.txt,.xlsx,.xls"><div class="hint">CSV is recommended. Excel import requires an internet connection to load the spreadsheet library.</div></div><button id="demo" class="alt">Load Sample Data</button><button id="export" class="alt" disabled>Export CSV</button><button id="clear" class="alt">Clear Data</button></div><div id="status" class="status">Upload a report exported from Meta Ads Manager to get started.</div><div class="hint">Export with a daily breakdown and include Campaign name, Campaign objective, Ad set name, Ad name, Amount spent, Impressions, Reach, Link clicks, and one specific Lead result column.</div></section>
+<section class="panel" id="filters"><div class="top"><h2>2. Filters & View Options</h2><div class="row"><label>Gom theo<select id="period"><option value="day">Day</option><option value="week">Week (Mon–Sun)</option></select></label><label>Currency<select id="currency"><option value="auto">Auto-detect</option><option>USD</option><option>VND</option><option>CAD</option><option>AUD</option><option>EUR</option><option>GBP</option><option>SGD</option><option value="other">Other</option></select></label><label>Analysis level<select id="level"><option value="campaign">Campaign</option><option value="adset">Ad Set</option><option value="ad">Ads</option></select></label></div></div><div class="filters"><label>Start date<input id="from" type="date"></label><label>End date<input id="to" type="date"></label><label>Campaign<select id="campaign"><option value="">All</option></select></label><label>Ad Set<select id="adset"><option value="">All</option></select></label><label>Ad<select id="ad"><option value="">All</option></select></label><button id="reset" class="alt">Reset</button></div></section>
+<section class="panel" id="settings"><div class="top"><h2>3. Column Mapping</h2><button id="mapBtn" class="alt" disabled>Apply Mapping</button></div><div id="mapping" class="mapping"></div><div id="mapnote" class="hint"></div></section>
+<section class="panel"><h2>4. KPI Overview</h2>
 <div class="account-reach-control">
- <div class="account-reach-copy"><strong>Account-level Reach</strong><div class="hint">Nhập Reach ở dòng <b>Total results</b> của Meta cho đúng khoảng ngày đang upload. Reach/Frequency không được cộng từ các dòng Ads hoặc ngày.</div></div>
- <label>Meta Total Reach<input id="accountReachInput" type="number" min="0" step="1" placeholder="Ví dụ: 99007"></label>
- <div id="accountReachHelp" class="hint">Chỉ áp dụng khi xem toàn bộ dữ liệu tài khoản, không lọc riêng Campaign / Ad Set / Ads.</div>
+ <div class="account-reach-copy"><strong>Account-level Reach</strong><div class="hint">Enter Reach from Meta’s <b>Total results</b> row for the same reporting period. Reach and Frequency must not be summed across ads or days.</div></div>
+ <label>Meta Total Reach<input id="accountReachInput" type="number" min="0" step="1" placeholder="e.g. 99007"></label>
+ <div id="accountReachHelp" class="hint">Applies only to the full account view, not when filtering an individual Campaign, Ad Set, or Ad.</div>
 </div>
 <div id="kpis" class="kpis"></div></section>
-<section class="panel" id="objectives"><h2>5. Phân bổ Campaign theo Objective</h2><div class="grid"><div class="chart"><h3>Tỷ trọng Spend</h3><canvas id="spie"></canvas><div class="hint">Phân bổ chi tiêu theo objective trong bộ lọc hiện tại.</div></div><div class="chart"><h3>Tỷ trọng Leads</h3><canvas id="lpie"></canvas><div class="hint">Phân bổ Lead theo objective. Nếu file thiếu objective, dashboard suy luận từ tên campaign và cần kiểm tra lại.</div></div></div></section>
-<section class="panel" id="trends"><h2>6. Trend theo thời gian</h2><div class="grid"><div class="chart"><h3>Spend & Leads</h3><canvas id="trend"></canvas></div><div class="chart"><h3>CPL theo thời gian</h3><canvas id="cpl"></canvas></div><div class="chart"><h3>CTR link & CPC link</h3><canvas id="clicktrend"></canvas></div><div class="chart"><h3>Impressions & Reach</h3><canvas id="reachtrend"></canvas></div></div></section>
+<section class="panel" id="objectives"><h2>5. Campaign Spend & Leads by Objective</h2><div class="grid"><div class="chart"><h3>Spend Share</h3><canvas id="spie"></canvas><div class="hint">Spend allocation by objective for the current filters.</div></div><div class="chart"><h3>Lead Share</h3><canvas id="lpie"></canvas><div class="hint">Lead allocation by objective. If the file has no objective column, the dashboard infers an objective from the campaign name; verify inferred labels.</div></div></div></section>
+<section class="panel" id="trends"><h2>6. Performance Trends Over Time</h2><div class="grid"><div class="chart"><h3>Spend & Leads</h3><canvas id="trend"></canvas></div><div class="chart"><h3>CPL Over Time</h3><canvas id="cpl"></canvas></div><div class="chart"><h3>CTR & CPC Over Time</h3><canvas id="clicktrend"></canvas></div><div class="chart"><h3>Impressions & Reach</h3><canvas id="reachtrend"></canvas></div></div></section>
 
 <section class="panel" id="dailyHeatmap">
-  <div class="top"><div><h2>7. Day & Hour Performance Heatmap</h2><div class="hint">Xem khung giờ nào ghi nhận kết quả nhiều hơn theo từng thứ trong tuần. Mỗi ô gom dữ liệu của khung 2 giờ và cộng qua khoảng ngày đang lọc.</div></div>
-    <label>Chỉ số hiển thị<select id="heatMetric"><option value="leads">Leads / Results</option><option value="spend">Spend</option><option value="cpl">Cost per Lead (CPL)</option><option value="imp">Impressions</option><option value="clicks">Link clicks</option><option value="ctr">CTR link</option><option value="cpc">CPC link</option></select></label>
+  <div class="top"><div><h2>7. Day & Hour Performance Heatmap</h2><div class="hint">See which two-hour periods generate more results by day of week. Each cell aggregates matching time slots across the selected date range.</div></div>
+    <label>Metric<select id="heatMetric"><option value="leads">Leads / Results</option><option value="spend">Spend</option><option value="cpl">Cost per Lead (CPL)</option><option value="imp">Impressions</option><option value="clicks">Link clicks</option><option value="ctr">CTR (all/link)</option><option value="cpc">CPC link</option></select></label>
   </div>
-  <div id="heatSummary" class="heat-summary">Upload file có breakdown theo Day & hour để tạo heatmap.</div>
+  <div id="heatSummary" class="heat-summary">Upload a report broken down by Day & Hour to populate this heatmap.</div>
   <div class="hour-heatmap-scroll"><div id="hourHeatGrid" class="hour-heatmap-grid"></div></div>
-  <div class="heat-legend"><span>Thấp</span><i class="heat-swatch heat-level-0"></i><i class="heat-swatch heat-level-1"></i><i class="heat-swatch heat-level-2"></i><i class="heat-swatch heat-level-3"></i><i class="heat-swatch heat-level-4"></i><span>Cao</span><span id="heatLegendNote" class="heat-legend-note"></span></div>
-  <div class="hint">Rê chuột hoặc chạm vào ô để xem ngày/khung giờ và số liệu. Với CPL/CPC, màu đậm hơn nghĩa là chi phí cao hơn. File chỉ có ngày không thể suy ra hiệu suất theo giờ.</div>
+  <div class="heat-legend"><span>Low</span><i class="heat-swatch heat-level-0"></i><i class="heat-swatch heat-level-1"></i><i class="heat-swatch heat-level-2"></i><i class="heat-swatch heat-level-3"></i><i class="heat-swatch heat-level-4"></i><span>High</span><span id="heatLegendNote" class="heat-legend-note"></span></div>
+  <div class="hint">Hover over or tap a cell to view its day/time slot and metrics. For CPL/CPC, darker orange means higher cost. A daily-only report cannot reveal hourly performance.</div>
 </section>
 
 
-<section class="panel"><h2>8. Gợi ý kiểm tra</h2><div id="insights" class="grid"></div><div class="hint">Gợi ý định hướng kiểm tra, không thay thế việc đánh giá chất lượng Lead hoặc target CPL.</div></section>
-<section class="panel" id="performance"><div class="top"><h2 id="datatable">9. Bảng hiệu suất</h2><div class="row"><input id="search" placeholder="Tìm nhóm quảng cáo"><select id="sort"><option value="spend">Sắp xếp: Spend</option><option value="leads">Leads</option><option value="cpl">CPL</option><option value="ctr">CTR</option><option value="clicks">Link clicks</option></select><select id="dir"><option value="desc">Giảm dần</option><option value="asc">Tăng dần</option></select></div></div><div class="tablewrap"><table id="table"><thead></thead><tbody></tbody></table></div><div id="tableNote" class="hint"></div></section>
-<section class="panel"><div class="note"><b>Lưu ý:</b> “Results” trong Meta có thể là nhiều loại hành động. Hãy map đúng một cột Lead cụ thể hoặc xác nhận cột Results là Lead. CPL = Spend / Leads; CTR link = Link clicks / Impressions; CPC = Spend / Link clicks. Reach của các ngày có thể trùng người. Đổi currency chỉ đổi ký hiệu/định dạng, không quy đổi ngoại tệ.</div></section>
+<section class="panel"><h2>8. Performance Insights</h2><div id="insights" class="grid"></div><div class="hint">These are diagnostic cues, not a substitute for reviewing Lead quality or your target CPL.</div></section>
+<section class="panel" id="performance"><div class="top"><h2 id="datatable">9. Performance Table</h2><div class="row"><input id="search" placeholder="Search campaigns, ad sets, or ads…"><select id="sort"><option value="spend">Sort by: Spend</option><option value="leads">Leads</option><option value="cpl">CPL</option><option value="ctr">CTR</option><option value="clicks">Link clicks</option></select><select id="dir"><option value="desc">Descending</option><option value="asc">Ascending</option></select></div></div><div class="tablewrap"><table id="table"><thead></thead><tbody></tbody></table></div><div id="tableNote" class="hint"></div></section>
+<section class="panel"><div class="note"><b>Note:</b> Meta’s “Results” can represent different actions. Map one specific Lead column, or confirm that the Results column represents Leads. CPL = Spend / Leads. CTR is imported from Meta’s selected CTR column, not recalculated from clicks. CPC link = Spend / Link clicks. Reach can overlap across days. Changing currency changes display formatting only; it does not convert currencies.</div></section>
 </main></div>
 <script>
 var $=function(id){return document.getElementById(id)},S={headers:[],raw:[],map:{},cur:"",accountSummary:null};
 var F=[
-["date","Ngày báo cáo",["reporting starts","date","day","start date","ngày bắt đầu","day & hour","day and hour"]],
-["hour","Hour of day",["time of day (ad account time zone)","time of day (ad account timezone)","hour","hour of day","day & hour","day and hour","time of day","hourly","start time","time","hour (account time zone)"]],
-["campaign","Campaign name",["campaign name","campaign","tên chiến dịch"]],
-["objective","Campaign objective",["campaign objective","objective","mục tiêu chiến dịch","mục tiêu"]],
-["adset","Ad set name",["ad set name","adset name","ad set","nhóm quảng cáo"]],
-["ad","Ad name",["ad name","quảng cáo"]],
-["spend","Amount spent",["amount spent","amount spent (usd)","amount spent (vnd)","spend","spent","chi tiêu"]],
-["impressions","Impressions",["impressions","lượt hiển thị"]],
-["reach","Reach",["reach","phạm vi tiếp cận"]],
-["clicks","Link clicks",["link clicks","outbound clicks","lượt nhấp liên kết"]],
+["date","Reporting Date",["reporting starts","date","day","start date","start date","day & hour","day and hour"]],
+["hour","Hour of Day",["time of day (ad account time zone)","time of day (ad account timezone)","hour","hour of day","day & hour","day and hour","time of day","hourly","start time","time","hour (account time zone)"]],
+["campaign","Campaign Name",["campaign name","campaign","campaign name"]],
+["objective","Campaign Objective",["campaign objective","objective","campaign objective","objective"]],
+["adset","Ad Set Name",["ad set name","adset name","ad set","ad set name"]],
+["ad","Ad Name",["ad name","ad name"]],
+["spend","Amount Spent",["amount spent","amount spent (usd)","amount spent (vnd)","spend","spent","spend"]],
+["impressions","Impressions",["impressions","impressions"]],
+["reach","Reach",["reach","reach"]],
+["clicks","Link Clicks",["link clicks","outbound clicks","link clicks"]],
 ["ctr","CTR from Meta export",["ctr (all)","ctr (all click-through rate)","ctr (link click-through rate)","link ctr","ctr (link)","ctr"]],
 ["cpc","CPC link",["cost per link click","cpc (link)"]],
-["leads","Leads / Results",["website leads","onsite leads","instant form leads","on-facebook leads","leads","lead","results","result","kết quả"]]
+["leads","Leads / Results",["website leads","onsite leads","instant form leads","on-facebook leads","leads","lead","results","result","results"]]
 ];
 function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim()}
 function parseCSV(s){s=s.replace(/^\uFEFF/,"");var first=s.split(/\r?\n/)[0]||"",sep=(first.match(/\t/g)||[]).length>(first.match(/,/g)||[]).length?"\t":",",out=[],row=[],cell="",q=false;for(var i=0;i<s.length;i++){var c=s[i];if(c==='"'){if(q&&s[i+1]==='"'){cell+='"';i++}else q=!q}else if(c===sep&&!q){row.push(cell);cell=""}else if((c==="\n"||c==="\r")&&!q){if(c==="\r"&&s[i+1]==="\n")i++;row.push(cell);if(row.some(function(x){return x.trim()}))out.push(row);row=[];cell=""}else cell+=c}row.push(cell);if(row.some(function(x){return x.trim()}))out.push(row);return out}
@@ -155,7 +164,7 @@ function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){retur
 function fnum(v,d){return Number(v||0).toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFractionDigits:d||0})}
 function curr(){return $("currency").value==="auto"?(S.cur||"other"):$("currency").value}
 function cash(v){var c=curr(),sym={USD:"$",VND:"₫",CAD:"C$",AUD:"A$",EUR:"€",GBP:"£",SGD:"S$",other:""};return (sym[c]||"")+fnum(v,c==="VND"?0:2)}
-function infer(raw,camp){if(raw)return String(raw);var s=String(camp||"").toLowerCase();if(/awareness|reach|brand|nhan dien/.test(s))return "Awareness (suy luận)";if(/traffic|click/.test(s))return "Traffic (suy luận)";if(/lead|form|messag|conversation/.test(s))return "Lead Generation (suy luận)";if(/sales|purchase|conversion/.test(s))return "Sales (suy luận)";return "Unknown"}
+function infer(raw,camp){if(raw)return String(raw);var s=String(camp||"").toLowerCase();if(/awareness|reach|brand|nhan dien/.test(s))return "Awareness (inferred)";if(/traffic|click/.test(s))return "Traffic (inferred)";if(/lead|form|messag|conversation/.test(s))return "Lead Generation (inferred)";if(/sales|purchase|conversion/.test(s))return "Sales (inferred)";return "Unknown"}
 function isAggregateSummaryRow(row,headers){
  var markers=/^(summary|summary row|total|grand total|total results|overall|overall total|campaign total|ad set total|adset total|ad total|account total|report total|results summary|all campaigns)$/i;
  var normVals=headers.map(function(h){return String(row[h]==null?"":row[h]).trim();});
@@ -234,28 +243,28 @@ function load(head,objs){
  var m=head.join(" ").toUpperCase().match(/AMOUNT SPENT\s*\((USD|VND|CAD|AUD|EUR|GBP|SGD)\)/);
  S.cur=m?m[1]:"";
  S.raw=objs.map(function(o){
-  var c=o[S.map.campaign]||"(Campaign không rõ)";
-  return Object.assign({},o,{_date:date(o[S.map.date]),_hour:parseHour(o[S.map.hour],o[S.map.date]),_campaign:String(c),_objective:infer(o[S.map.objective],c),_adset:String(o[S.map.adset]||"(Ad Set không rõ)"),_ad:String(o[S.map.ad]||"(Ad không rõ)")});
+  var c=o[S.map.campaign]||"(Unknown campaign)";
+  return Object.assign({},o,{_date:date(o[S.map.date]),_hour:parseHour(o[S.map.hour],o[S.map.date]),_campaign:String(c),_objective:infer(o[S.map.objective],c),_adset:String(o[S.map.adset]||"(Unknown ad set)"),_ad:String(o[S.map.ad]||"(Unknown ad)")});
  });
  if(accountSummary&&accountSummary.reach!==null){
   $("accountReachInput").value=String(accountSummary.reach);
   $("accountReachHelp").textContent="Tự đọc từ dòng Summary của Meta: Reach "+fnum(accountSummary.reach)+(accountSummary.frequency!==null?" · Frequency "+fnum(accountSummary.frequency,2):"")+". Dòng Summary đã được tách khỏi dữ liệu chi tiết để tránh cộng trùng.";
  }else{
-  $("accountReachHelp").textContent="File không có dòng tổng tài khoản có Reach. Nhập Reach từ dòng Total results của Meta cho đúng khoảng ngày.";
+  $("accountReachHelp").textContent="No account-level Reach row was found. Enter Reach from Meta Total results for the same reporting period.";
  }
  buildMap();buildFilters();$("mapBtn").disabled=false;$("export").disabled=false;
- var statusText="Đã nạp "+objs.length+" dòng chi tiết";
- if(accountSummary)statusText+=" · đã đọc 1 dòng Summary cấp tài khoản và loại khỏi phép cộng chi tiết";
- if(skippedCount-(accountSummary?1:0)>0)statusText+=" · đã loại thêm "+(skippedCount-1)+" dòng tổng hợp";
+ var statusText="Loaded "+objs.length+" detail rows";
+ if(accountSummary)statusText+=" · detected the account Summary row and excluded it from detail calculations";
+ if(skippedCount-(accountSummary?1:0)>0)statusText+=" · excluded an additional "+(skippedCount-1)+" aggregate rows";
  statusText+=".";
  msg(statusText,S.map.spend&&S.map.leads?"ok":"warn");
- $("mapnote").textContent="Currency tự nhận diện: "+(S.cur||"không rõ")+". Dòng Summary được dùng cho Reach/Frequency cấp tài khoản, nhưng không được cộng vào bảng Campaign/Ad/Day.";
+ $("mapnote").textContent="Auto-detected currency: "+(S.cur||"unknown")+". The Summary row is used for account-level Reach/Frequency and excluded from Campaign/Ad/Day detail totals.";
  render();
 }
 function msg(s,c){$("status").textContent=s;$("status").className="status "+(c||"")}
-function buildMap(){ $("mapping").innerHTML=F.map(function(f){return '<label>'+f[1]+'<select data-k="'+f[0]+'"><option value="">— không dùng —</option>'+S.headers.map(function(h){return '<option '+(h===S.map[f[0]]?"selected":"")+' value="'+esc(h)+'">'+esc(h)+'</option>'}).join("")+'</select></label>'}).join("")}
-function applyMap(){document.querySelectorAll("[data-k]").forEach(function(el){S.map[el.dataset.k]=el.value});S.raw=S.raw.map(function(r){var c=r[S.map.campaign]||"(Campaign không rõ)";r._date=date(r[S.map.date]);r._hour=parseHour(r[S.map.hour],r[S.map.date]);r._campaign=String(c);r._objective=infer(r[S.map.objective],c);r._adset=String(r[S.map.adset]||"(Ad Set không rõ)");r._ad=String(r[S.map.ad]||"(Ad không rõ)");return r});buildFilters();render();msg("Đã áp dụng mapping — đối chiếu Spend và Leads với Ads Manager.","ok")}
-function fill(id,vals){var e=$(id),old=e.value;e.innerHTML='<option value="">Tất cả</option>'+vals.map(function(v){return '<option value="'+esc(v)+'">'+esc(v)+'</option>'}).join("");if(vals.indexOf(old)>=0)e.value=old}
+function buildMap(){ $("mapping").innerHTML=F.map(function(f){return '<label>'+f[1]+'<select data-k="'+f[0]+'"><option value="">— Not used —</option>'+S.headers.map(function(h){return '<option '+(h===S.map[f[0]]?"selected":"")+' value="'+esc(h)+'">'+esc(h)+'</option>'}).join("")+'</select></label>'}).join("")}
+function applyMap(){document.querySelectorAll("[data-k]").forEach(function(el){S.map[el.dataset.k]=el.value});S.raw=S.raw.map(function(r){var c=r[S.map.campaign]||"(Unknown campaign)";r._date=date(r[S.map.date]);r._hour=parseHour(r[S.map.hour],r[S.map.date]);r._campaign=String(c);r._objective=infer(r[S.map.objective],c);r._adset=String(r[S.map.adset]||"(Unknown ad set)");r._ad=String(r[S.map.ad]||"(Unknown ad)");return r});buildFilters();render();msg("Mapping applied. Compare Spend and Leads with Ads Manager to validate the results.","ok")}
+function fill(id,vals){var e=$(id),old=e.value;e.innerHTML='<option value="">All</option>'+vals.map(function(v){return '<option value="'+esc(v)+'">'+esc(v)+'</option>'}).join("");if(vals.indexOf(old)>=0)e.value=old}
 function buildFilters(){fill("campaign",Array.from(new Set(S.raw.map(function(r){return r._campaign}))).sort());subs()}
 function subs(){var c=$("campaign").value,rs=S.raw.filter(function(r){return !c||r._campaign===c});fill("adset",Array.from(new Set(rs.map(function(r){return r._adset}))).sort());rs=rs.filter(function(r){return !$("adset").value||r._adset===$("adset").value});fill("ad",Array.from(new Set(rs.map(function(r){return r._ad}))).sort())}
 function filtered(){var f=$("from").value,t=$("to").value,c=$("campaign").value,a=$("adset").value,ad=$("ad").value;return S.raw.filter(function(r){return (!f||!r._date||r._date>=f)&&(!t||!r._date||r._date<=t)&&(!c||r._campaign===c)&&(!a||r._adset===a)&&(!ad||r._ad===ad)})}
@@ -289,7 +298,7 @@ function kpi(a,b,c){return '<div class="kpi"><small>'+a+'</small><strong>'+b+'</
 function ctrLabel(){
  var c=String(S.map.ctr||"");
  if(/ctr\s*\(\s*all\s*\)/i.test(c))return "CTR (all)";
- if(/link/i.test(c))return "CTR link";
+ if(/link/i.test(c))return "CTR (all/link)";
  return c?"CTR (export)":"CTR (export unavailable)";
 }
 
@@ -314,24 +323,24 @@ function render(){
   accountReach=enteredReach!==null?enteredReach:S.accountSummary.reach;
   if(accountReach!==null&&accountReach===S.accountSummary.reach&&S.accountSummary.frequency!==null)accountFrequency=S.accountSummary.frequency;
   else if(accountReach!==null&&m.imp>0)accountFrequency=m.imp/accountReach;
-  $("accountReachHelp").textContent="Đang dùng Summary cấp tài khoản cho kỳ "+(S.accountSummary.start||"")+(S.accountSummary.end?" đến "+S.accountSummary.end:"")+". Reach/Frequency không cộng từ Ad hoặc Day.";
+  $("accountReachHelp").textContent="Using the account Summary row for "+(S.accountSummary.start||"")+(S.accountSummary.end?" to "+S.accountSummary.end:"")+". Reach/Frequency are not summed from Ad or Day rows.";
  }else if(!S.accountSummary&&!hasFilters&&!hasDateFilter){
   accountReach=enteredReach;
   if(accountReach!==null&&m.imp>0)accountFrequency=m.imp/accountReach;
-  $("accountReachHelp").textContent=accountReach!==null?"Reach nhập thủ công từ Meta Total results.":"File không có Summary cấp tài khoản; nhập Reach tổng của cùng kỳ nếu cần Frequency.";
+  $("accountReachHelp").textContent=accountReach!==null?"Manually entered from Meta Total results.":"No account-level Summary row was found. Enter total Reach for the same reporting period to calculate Frequency.";
  }else{
-  $("accountReachHelp").textContent="Đang xem một phần dữ liệu hoặc khác kỳ Summary: không dùng Reach/Frequency tổng tài khoản cho bộ lọc này.";
+  $("accountReachHelp").textContent="You are viewing a filtered subset or a different period; account-level Reach/Frequency are not applied to this view.";
  }
- $("kpis").innerHTML=kpi("Spend",cash(m.spend),"Tổng chi tiêu")+
- kpi("Leads",fnum(m.leads),"Theo cột Lead đã map")+
+ $("kpis").innerHTML=kpi("Spend",cash(m.spend),"Tổng spend")+
+ kpi("Leads",fnum(m.leads),"From the mapped Lead column")+
  kpi("Cost per Lead",m.leads?cash(m.spend/m.leads):"—","Spend / Leads")+
- kpi(ctrLabel(),m.ctr!==null?fnum(m.ctr,2)+"%":"N/A","Lấy trực tiếp từ cột "+(S.map.ctr||"CTR chưa được map"))+
- kpi("Link clicks",fnum(m.clicks),"Tổng click")+
+ kpi(ctrLabel(),m.ctr!==null?fnum(m.ctr,2)+"%":"N/A","Imported directly from "+(S.map.ctr||"CTR column not mapped"))+
+ kpi("Link clicks",fnum(m.clicks),"Total link clicks")+
  kpi("CPC link",cash(m.clicks?m.spend/m.clicks:0),"Spend / Clicks")+
- kpi("Impressions",fnum(m.imp),"Tổng lượt hiển thị")+
- kpi("CPM",cash(m.imp?1000*m.spend/m.imp:0),"Chi phí / 1.000 impressions")+
- kpi("Account Reach",accountReach!==null?fnum(accountReach):"N/A",accountReach!==null?(useAccountSummary?"Meta Summary · account-level":"Reach tổng tài khoản nhập thủ công"):"Không cộng Reach qua Ads/ngày")+
- kpi("Account Frequency",accountFrequency!==null?fnum(accountFrequency,2):"N/A",accountFrequency!==null?(useAccountSummary?"Meta Summary · account-level":"Impressions / Account Reach"):"Cần Summary ở cùng kỳ");
+ kpi("Impressions",fnum(m.imp),"Tổng impressions")+
+ kpi("CPM",cash(m.imp?1000*m.spend/m.imp:0),"Cost per 1,000 impressions")+
+ kpi("Account Reach",accountReach!==null?fnum(accountReach):"N/A",accountReach!==null?(useAccountSummary?"Meta Summary · account-level":"Manually entered account Reach"):"Reach is not summed across ads/days")+
+ kpi("Account Frequency",accountFrequency!==null?fnum(accountFrequency,2):"N/A",accountFrequency!==null?(useAccountSummary?"Meta Summary · account-level":"Impressions / Account Reach"):"Account Summary for the same period is required");
  var t=ts(rs);
  pie("spie",obj(rs,"spend"),"Spend");pie("lpie",obj(rs,"leads"),"Leads");
  dual("trend",t.map(function(x){return x.spend}),t.map(function(x){return x.leads}),t.map(function(x){return x.date}),"Spend","Leads");
@@ -343,25 +352,73 @@ function render(){
 }
 function obj(rs,key){var m=new Map();rs.forEach(function(r){var o=r._objective||"Unknown",v=key==="spend"?n(r[S.map.spend]):n(r[S.map.leads]);m.set(o,(m.get(o)||0)+v)});return Array.from(m.entries()).filter(function(x){return x[1]>0}).sort(function(a,b){return b[1]-a[1]})}
 function canvas(id){var c=$(id),w=c.clientWidth||450,h=230,d=window.devicePixelRatio||1;c.width=w*d;c.height=h*d;var x=c.getContext("2d");x.scale(d,d);x.clearRect(0,0,w,h);return {x:x,w:w,h:h}}
-function pie(id,items,label){var z=canvas(id),x=z.x,w=z.w,h=z.h,total=items.reduce(function(s,v){return s+v[1]},0),colors=["#2878f0","#2ec99a","#ff8a34","#8755f5","#f255a5","#11b9cf","#98a8bc"];if(!total){x.fillStyle="#667085";x.fillText("Chưa có dữ liệu "+label,15,30);return}var cx=Math.min(110,w*.27),cy=h/2,r=72,s=-Math.PI/2;items.forEach(function(v,i){var e=s+v[1]/total*Math.PI*2;x.beginPath();x.moveTo(cx,cy);x.arc(cx,cy,r,s,e);x.closePath();x.fillStyle=colors[i%colors.length];x.fill();s=e});var lx=Math.min(cx+r+18,w*.53),max=Math.floor((h-18)/25);items.slice(0,max).forEach(function(v,i){var y=18+i*25;x.fillStyle=colors[i%colors.length];x.fillRect(lx,y,9,9);x.fillStyle="#172033";x.font="11px system-ui";x.fillText(v[0].slice(0,22),lx+14,y+8);x.fillStyle="#667085";x.fillText(fnum(v[1])+" · "+fnum(v[1]/total*100,1)+"%",lx+14,y+20)});}
+function pie(id,items,label){var z=canvas(id),x=z.x,w=z.w,h=z.h,total=items.reduce(function(s,v){return s+v[1]},0),colors=["#2878f0","#2ec99a","#ff8a34","#8755f5","#f255a5","#11b9cf","#98a8bc"];if(!total){x.fillStyle="#667085";x.fillText("No data for "+label,15,30);return}var cx=Math.min(110,w*.27),cy=h/2,r=72,s=-Math.PI/2;items.forEach(function(v,i){var e=s+v[1]/total*Math.PI*2;x.beginPath();x.moveTo(cx,cy);x.arc(cx,cy,r,s,e);x.closePath();x.fillStyle=colors[i%colors.length];x.fill();s=e});var lx=Math.min(cx+r+18,w*.53),max=Math.floor((h-18)/25);items.slice(0,max).forEach(function(v,i){var y=18+i*25;x.fillStyle=colors[i%colors.length];x.fillRect(lx,y,9,9);x.fillStyle="#172033";x.font="11px system-ui";x.fillText(v[0].slice(0,22),lx+14,y+8);x.fillStyle="#667085";x.fillText(fnum(v[1])+" · "+fnum(v[1]/total*100,1)+"%",lx+14,y+20)});}
 function axes(x,w,h,max,labels){var l=42,r=10,t=20,b=30,pw=w-l-r,ph=h-t-b;x.font="10px system-ui";for(var i=0;i<5;i++){var y=t+ph*i/4;x.strokeStyle="#e7ebf2";x.beginPath();x.moveTo(l,y);x.lineTo(w-r,y);x.stroke();x.fillStyle="#667085";x.fillText(fnum(max*(1-i/4),max<10?1:0),2,y+3)}labels.forEach(function(s,i){if(labels.length<10||i%Math.ceil(labels.length/7)===0){x.fillStyle="#667085";x.fillText(String(s).slice(5,10),l+i*pw/Math.max(1,labels.length-1)-12,h-8)}});return {l:l,t:t,pw:pw,ph:ph}}
-function dual(id,a,b,labels,la,lb){var z=canvas(id),x=z.x,w=z.w,h=z.h,ma=Math.max(1,...a),mb=Math.max(1,...b),p=axes(x,w,h,ma,labels);x.font="11px system-ui";x.fillStyle="#2878f0";x.fillText(la,p.l,p.t+10);x.fillStyle="#2ec99a";x.fillText(lb,p.l+100,p.t+10);function draw(vals,max,color){if(!vals.length)return;x.beginPath();vals.forEach(function(v,i){var xx=p.l+(vals.length===1?p.pw/2:i*p.pw/Math.max(1,vals.length-1)),yy=p.t+p.ph-(v||0)/max*p.ph;if(i===0)x.moveTo(xx,yy);else x.lineTo(xx,yy)});x.strokeStyle=color;x.lineWidth=2.4;x.stroke()}draw(a,ma,"#2878f0");draw(b,mb,"#2ec99a")}
-function line(id,vals,labels,title){var z=canvas(id),x=z.x,p=axes(x,z.w,z.h,Math.max(1,...vals.filter(function(v){return v!==null})),labels);x.fillStyle="#2878f0";x.font="11px system-ui";x.fillText(title,p.l,p.t+10);x.beginPath();var started=false;vals.forEach(function(v,i){if(v===null)return;var xx=p.l+(vals.length===1?p.pw/2:i*p.pw/Math.max(1,vals.length-1)),yy=p.t+p.ph-v/Math.max(1,...vals.filter(function(v){return v!==null}))*p.ph;if(!started){x.moveTo(xx,yy);started=true}else x.lineTo(xx,yy)});if(started){x.strokeStyle="#ff8a34";x.lineWidth=2.4;x.stroke()}}
 
+function chartKey(label){var s=String(label||"").toLowerCase();if(s.indexOf("spend")>=0)return "spend";if(s.indexOf("lead")>=0||s.indexOf("result")>=0)return "leads";if(s.indexOf("cpl")>=0||s.indexOf("cost per lead")>=0)return "cpl";if(s.indexOf("ctr")>=0)return "ctr";if(s.indexOf("cpc")>=0)return "cpc";if(s.indexOf("impression")>=0)return "imp";if(s.indexOf("reach")>=0)return "reach";if(s.indexOf("click")>=0)return "clicks";return "number";}
+function chartValue(key,v){if(v===null||v===undefined||!isFinite(Number(v)))return "N/A";if(key==="spend"||key==="cpl"||key==="cpc"||key==="cpm")return cash(v);if(key==="ctr")return fnum(v,2)+"%";return fnum(v);}
+function formatDateLabel(s){var d=new Date(String(s)+"T12:00:00Z");return isNaN(d) ? String(s) : d.toLocaleDateString("en-US",{month:"short",day:"2-digit",year:"numeric",timeZone:"UTC"});}
+function attachChartHover(id,labels,series,p){
+ var c=$(id),box=c.closest(".chart")||c.parentElement;
+ if(!c||!box||!labels||!labels.length)return;
+ var old=box.querySelector('[data-tooltip-for="'+id+'"]');if(old)old.remove();
+ var oldGuide=box.querySelector('[data-guide-for="'+id+'"]');if(oldGuide)oldGuide.remove();
+ var tip=document.createElement("div");tip.className="chart-hover-tooltip";tip.setAttribute("data-tooltip-for",id);box.appendChild(tip);
+ var guide=document.createElement("div");guide.className="chart-hover-guide";guide.setAttribute("data-guide-for",id);box.appendChild(guide);
+ c.style.cursor="crosshair";
+ function hide(){tip.style.display="none";guide.style.display="none";}
+ c.onmousemove=function(ev){
+  var rect=c.getBoundingClientRect(),rawX=ev.clientX-rect.left,rawY=ev.clientY-rect.top;
+  if(rawX<p.l||rawX>p.l+p.pw||labels.length===0){hide();return;}
+  var idx=labels.length===1?0:Math.round((rawX-p.l)/p.pw*(labels.length-1));
+  idx=Math.max(0,Math.min(labels.length-1,idx));
+  var title=formatDateLabel(labels[idx]);
+  tip.innerHTML='<div class="chart-hover-date">'+esc(title)+'</div>'+series.map(function(z){
+   var value=(idx<z.values.length)?z.values[idx]:null;
+   return '<div class="chart-hover-row"><span class="chart-hover-dot" style="background:'+z.color+'"></span><span class="chart-hover-name">'+esc(z.name)+'</span><span class="chart-hover-value">'+esc(chartValue(z.key,value))+'</span></div>';
+  }).join("");
+  tip.style.display="block";
+  var boxRect=box.getBoundingClientRect(),canvasLeft=rect.left-boxRect.left,canvasTop=rect.top-boxRect.top;
+  var left=canvasLeft+rawX+14;
+  if(left+tip.offsetWidth>box.clientWidth-6)left=canvasLeft+rawX-tip.offsetWidth-14;
+  left=Math.max(6,Math.min(left,box.clientWidth-tip.offsetWidth-6));
+  var top=canvasTop+rawY+12;
+  if(top+tip.offsetHeight>box.clientHeight-6)top=canvasTop+rawY-tip.offsetHeight-10;
+  top=Math.max(42,Math.min(top,box.clientHeight-tip.offsetHeight-6));
+  tip.style.left=left+"px";tip.style.top=top+"px";
+  guide.style.display="block";guide.style.left=(canvasLeft+p.l+(labels.length===1?p.pw/2:idx*p.pw/(labels.length-1)))+"px";
+ };
+ c.onmouseleave=hide;
+}
+function dual(id,a,b,labels,la,lb){
+ var z=canvas(id),x=z.x,w=z.w,h=z.h,ma=Math.max(1,...a.filter(function(v){return v!==null&&isFinite(v)})),mb=Math.max(1,...b.filter(function(v){return v!==null&&isFinite(v)})),p=axes(x,w,h,ma,labels);
+ x.font="11px Montserrat, Arial, sans-serif";x.fillStyle="#2878f0";x.fillText(la,p.l,p.t+10);x.fillStyle="#2ec99a";x.fillText(lb,p.l+100,p.t+10);
+ function draw(vals,max,color){if(!vals.length)return;x.beginPath();vals.forEach(function(v,i){var xx=p.l+(vals.length===1?p.pw/2:i*p.pw/Math.max(1,vals.length-1)),yy=p.t+p.ph-(v||0)/max*p.ph;if(i===0)x.moveTo(xx,yy);else x.lineTo(xx,yy)});x.strokeStyle=color;x.lineWidth=2.4;x.stroke();}
+ draw(a,ma,"#2878f0");draw(b,mb,"#2ec99a");
+ attachChartHover(id,labels,[{name:la,key:chartKey(la),values:a,color:"#2878f0"},{name:lb,key:chartKey(lb),values:b,color:"#2ec99a"}],p);
+}
+function line(id,vals,labels,title){
+ var z=canvas(id),x=z.x,maxValue=Math.max(1,...vals.filter(function(v){return v!==null&&isFinite(v)})),p=axes(x,z.w,z.h,maxValue,labels);
+ x.fillStyle="#2878f0";x.font="11px Montserrat, Arial, sans-serif";x.fillText(title,p.l,p.t+10);
+ x.beginPath();var started=false;
+ vals.forEach(function(v,i){if(v===null||!isFinite(v))return;var xx=p.l+(vals.length===1?p.pw/2:i*p.pw/Math.max(1,vals.length-1)),yy=p.t+p.ph-v/maxValue*p.ph;if(!started){x.moveTo(xx,yy);started=true;}else x.lineTo(xx,yy);});
+ if(started){x.strokeStyle="#ff8a34";x.lineWidth=2.4;x.stroke();}
+ attachChartHover(id,labels,[{name:title,key:chartKey(title),values:vals,color:"#ff8a34"}],p);
+}
 function heatmapMetricValue(m,key){return key==="spend"?m.spend:key==="leads"?m.leads:key==="cpl"?m.cpl:key==="imp"?m.imp:key==="reach"?m.reach:key==="ctr"?m.ctr:key==="cpc"?m.cpc:0}
 
 function heatMetricValue(m,key){return key==="spend"?m.spend:key==="leads"?m.leads:key==="cpl"?m.cpl:key==="imp"?m.imp:key==="reach"?m.reach:key==="clicks"?m.clicks:key==="ctr"?m.ctr:key==="cpc"?m.cpc:0}
-function heatMetricLabel(key){return ({spend:"Spend",leads:"Leads / Results",cpl:"CPL",imp:"Impressions",reach:"Reach",clicks:"Link clicks",ctr:"CTR link",cpc:"CPC link"})[key]||key}
+function heatMetricLabel(key){return ({spend:"Spend",leads:"Leads / Results",cpl:"CPL",imp:"Impressions",reach:"Reach",clicks:"Link clicks",ctr:"CTR (all/link)",cpc:"CPC link"})[key]||key}
 function heatMetricFormat(key,v){if(v===null||v===undefined)return "N/A";if(key==="spend"||key==="cpl"||key==="cpc")return cash(v);if(key==="ctr")return fnum(v,2)+"%";return fnum(v)}
 function drawHeatmap(rows){
  var grid=$("hourHeatGrid"),summary=$("heatSummary"),note=$("heatLegendNote"),key=$("heatMetric").value||"leads";
- var dayNames=["Chủ nhật","Thứ 2","Thứ 3","Thứ 4","Thứ 5","Thứ 6","Thứ 7"],shortDays=["CN","T2","T3","T4","T5","T6","T7"];
+ var dayNames=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],shortDays=["CN","T2","T3","T4","T5","T6","T7"];
  var hourly=rows.filter(function(r){return r._date&&Number.isInteger(r._hour)&&r._hour>=0&&r._hour<=23;});
  grid.innerHTML="";
  if(!hourly.length){
-   grid.innerHTML='<div class="hint" style="grid-column:1/-1;padding:18px;background:#f8fbff;border:1px dashed #cad9eb;border-radius:10px">Chưa tìm thấy dữ liệu theo giờ. File chỉ có ngày không thể suy ra giờ trong ngày. Hãy export lại từ Meta Ads Manager với breakdown <b>Day & hour / Hour of day</b>, hoặc map đúng cột Hour of day ở mục Mapping.</div>';
-   summary.textContent="Chưa có dữ liệu giờ hợp lệ.";
-   note.textContent="Cần export theo giờ để phân tích giờ đăng/phân phối.";
+   grid.innerHTML='<div class="hint" style="grid-column:1/-1;padding:18px;background:#f8fbff;border:1px dashed #cad9eb;border-radius:10px">No hourly data was found. A daily-only report cannot reveal time-of-day performance. Export from Meta Ads Manager with a <b>Day & Hour / Hour of day</b> breakdown, or map the correct Hour of day column in Column Mapping.</div>';
+   summary.textContent="No data for giờ hợp lệ.";
+   note.textContent="Export hourly data to analyze delivery by time of day.";
    return;
  }
  var buckets=new Map(),dates=new Set();
@@ -373,14 +430,14 @@ function drawHeatmap(rows){
  var cuts=[quantile(.2),quantile(.4),quantile(.6),quantile(.8)];
  function lev(v){if(v<=0)return 0;return v<=cuts[0]?1:v<=cuts[1]?2:v<=cuts[2]?3:4;}
  grid.innerHTML="";
- var corner=document.createElement("div");corner.className="hour-head";corner.textContent="Giờ";grid.appendChild(corner);
+ var corner=document.createElement("div");corner.className="hour-head";corner.textContent="Hour";grid.appendChild(corner);
  shortDays.forEach(function(d,i){var h=document.createElement("div");h.className="hour-head";h.textContent=d;h.title=dayNames[i];grid.appendChild(h);});
  for(var slot=0;slot<12;slot++){
    var label=document.createElement("div");label.className="hour-label";label.textContent=String(slot*2).padStart(2,"0")+":00";grid.appendChild(label);
    for(var day=0;day<7;day++){
      var cellData=cells.find(function(c){return c.dow===day&&c.slot===slot;}),el=document.createElement("div");
-     if(!cellData.rows.length){el.className="hour-cell no-hour-data";el.textContent="—";el.title=dayNames[day]+" "+String(slot*2).padStart(2,"0")+":00–"+String(slot*2+1).padStart(2,"0")+":59 · Không có dữ liệu";el.setAttribute("aria-label",el.title);}
-     else{var v=cellData.value;el.className="hour-cell heat-level-"+lev(v)+((key==="cpl"||key==="cpc")?" heat-cost":"");el.textContent=heatMetricFormat(key,v);el.title=dayNames[day]+" · "+String(slot*2).padStart(2,"0")+":00–"+String(slot*2+1).padStart(2,"0")+":59\n"+heatMetricLabel(key)+": "+heatMetricFormat(key,v)+"\nNgày có dữ liệu: "+cellData.dates.length+"\nSpend: "+cash(cellData.m.spend)+"\nLeads / Results: "+fnum(cellData.m.leads)+"\nCPL: "+(cellData.m.leads?cash(cellData.m.cpl):"—")+"\nReach: "+(cellData.m.reachAvailable?fnum(cellData.m.reach):"N/A (not additive across ads)")+"\nImpressions: "+fnum(cellData.m.imp)+"\nLink clicks: "+fnum(cellData.m.clicks);el.setAttribute("aria-label",el.title);}
+     if(!cellData.rows.length){el.className="hour-cell no-hour-data";el.textContent="—";el.title=dayNames[day]+" "+String(slot*2).padStart(2,"0")+":00–"+String(slot*2+1).padStart(2,"0")+":59 · No data";el.setAttribute("aria-label",el.title);}
+     else{var v=cellData.value;el.className="hour-cell heat-level-"+lev(v)+((key==="cpl"||key==="cpc")?" heat-cost":"");el.textContent=heatMetricFormat(key,v);el.title=dayNames[day]+" · "+String(slot*2).padStart(2,"0")+":00–"+String(slot*2+1).padStart(2,"0")+":59\n"+heatMetricLabel(key)+": "+heatMetricFormat(key,v)+"\nDates with data: "+cellData.dates.length+"\nSpend: "+cash(cellData.m.spend)+"\nLeads / Results: "+fnum(cellData.m.leads)+"\nCPL: "+(cellData.m.leads?cash(cellData.m.cpl):"—")+"\nReach: "+(cellData.m.reachAvailable?fnum(cellData.m.reach):"N/A (not additive across ads)")+"\nImpressions: "+fnum(cellData.m.imp)+"\nLink clicks: "+fnum(cellData.m.clicks);el.setAttribute("aria-label",el.title);}
      grid.appendChild(el);
    }
  }
@@ -389,10 +446,10 @@ function drawHeatmap(rows){
  note.textContent=(key==="cpl"||key==="cpc")?"Orange = higher cost":"Blue intensity = higher value";
 }
 
-function insight(rs){var g=groups(rs),by=new Map();g.forEach(function(x){if(!by.has(x.name))by.set(x.name,[]);by.get(x.name).push.apply(by.get(x.name),x.rs)});var all=Array.from(by.entries()).map(function(e){return Object.assign({name:e[0]},metric(e[1]))}),low=all.filter(function(x){return x.leads>0}).sort(function(a,b){return a.cpl-b.cpl})[0],high=all.sort(function(a,b){return b.spend-a.spend})[0],zero=all.filter(function(x){return x.spend>0&&x.leads===0}).sort(function(a,b){return b.spend-a.spend})[0];$("insights").innerHTML='<div class="chart"><b>CPL thấp nhất</b><p>'+(low?esc(low.name)+"<br><strong>"+cash(low.cpl)+"</strong><br>"+fnum(low.leads)+" Leads":"Chưa có Lead")+'</p></div><div class="chart"><b>Chi tiêu cao nhất</b><p>'+(high?esc(high.name)+"<br><strong>"+cash(high.spend)+"</strong><br>"+fnum(high.leads)+" Leads":"Chưa có spend")+'</p></div><div class="chart"><b>Spend nhưng chưa có Lead</b><p>'+(zero?esc(zero.name)+"<br><strong>"+cash(zero.spend)+"</strong><br>Kiểm tra tracking/form":"Không có nhóm phù hợp")+'</p></div>'}
-function table(rs){var g=groups(rs),q=$("search").value.toLowerCase(),key=$("sort").value,dir=$("dir").value;g=g.filter(function(x){return x.name.toLowerCase().indexOf(q)>=0});g.sort(function(a,b){var av=key==="cpl"?(a.leads?a.cpl:Infinity):a[key]||0,bv=key==="cpl"?(b.leads?b.cpl:Infinity):b[key]||0;return (av-bv)*(dir==="asc"?1:-1)});var h=["Tên nhóm","Kỳ","Spend","Leads","CPL","Impressions","Reach","Link clicks",ctrLabel(),"CPC link","CPM"];$("table").querySelector("thead").innerHTML="<tr>"+h.map(function(x){return "<th>"+x+"</th>"}).join("")+"</tr>";$("table").querySelector("tbody").innerHTML=g.slice(0,1000).map(function(x){return "<tr><td>"+esc(x.name)+"</td><td>"+esc(x.date)+"</td><td>"+cash(x.spend)+"</td><td>"+fnum(x.leads)+"</td><td>"+(x.leads?cash(x.cpl):"—")+"</td><td>"+fnum(x.imp)+"</td><td>"+(x.reachAvailable?fnum(x.reach):"N/A")+"</td><td>"+fnum(x.clicks)+"</td><td>"+(x.ctr!==null?fnum(x.ctr,2)+"%":"—")+"</td><td>"+cash(x.cpc)+"</td><td>"+cash(x.cpm)+"</td></tr>"}).join("")||'<tr><td colspan="11">Không có dữ liệu phù hợp</td></tr>';$("tableNote").textContent=g.length+" dòng tổng hợp · theo "+$("level").selectedOptions[0].text+" · "+$("period").selectedOptions[0].text}
+function insight(rs){var g=groups(rs),by=new Map();g.forEach(function(x){if(!by.has(x.name))by.set(x.name,[]);by.get(x.name).push.apply(by.get(x.name),x.rs)});var all=Array.from(by.entries()).map(function(e){return Object.assign({name:e[0]},metric(e[1]))}),low=all.filter(function(x){return x.leads>0}).sort(function(a,b){return a.cpl-b.cpl})[0],high=all.sort(function(a,b){return b.spend-a.spend})[0],zero=all.filter(function(x){return x.spend>0&&x.leads===0}).sort(function(a,b){return b.spend-a.spend})[0];$("insights").innerHTML='<div class="chart"><b>Lowest CPL</b><p>'+(low?esc(low.name)+"<br><strong>"+cash(low.cpl)+"</strong><br>"+fnum(low.leads)+" Leads":"No Leads")+'</p></div><div class="chart"><b>Highest spend</b><p>'+(high?esc(high.name)+"<br><strong>"+cash(high.spend)+"</strong><br>"+fnum(high.leads)+" Leads":"No spend")+'</p></div><div class="chart"><b>Spend with no Leads</b><p>'+(zero?esc(zero.name)+"<br><strong>"+cash(zero.spend)+"</strong><br>Check tracking and form setup":"No matching group")+'</p></div>'}
+function table(rs){var g=groups(rs),q=$("search").value.toLowerCase(),key=$("sort").value,dir=$("dir").value;g=g.filter(function(x){return x.name.toLowerCase().indexOf(q)>=0});g.sort(function(a,b){var av=key==="cpl"?(a.leads?a.cpl:Infinity):a[key]||0,bv=key==="cpl"?(b.leads?b.cpl:Infinity):b[key]||0;return (av-bv)*(dir==="asc"?1:-1)});var h=["Group name","Period","Spend","Leads","CPL","Impressions","Reach","Link clicks",ctrLabel(),"CPC link","CPM"];$("table").querySelector("thead").innerHTML="<tr>"+h.map(function(x){return "<th>"+x+"</th>"}).join("")+"</tr>";$("table").querySelector("tbody").innerHTML=g.slice(0,1000).map(function(x){return "<tr><td>"+esc(x.name)+"</td><td>"+esc(x.date)+"</td><td>"+cash(x.spend)+"</td><td>"+fnum(x.leads)+"</td><td>"+(x.leads?cash(x.cpl):"—")+"</td><td>"+fnum(x.imp)+"</td><td>"+(x.reachAvailable?fnum(x.reach):"N/A")+"</td><td>"+fnum(x.clicks)+"</td><td>"+(x.ctr!==null?fnum(x.ctr,2)+"%":"—")+"</td><td>"+cash(x.cpc)+"</td><td>"+cash(x.cpm)+"</td></tr>"}).join("")||'<tr><td colspan="11">No matching data</td></tr>';$("tableNote").textContent=g.length+" grouped rows · by "+$("level").selectedOptions[0].text+" · "+$("period").selectedOptions[0].text}
 function exportCSV(){var g=groups(filtered()),h=["Name","Period","Spend","Leads","CPL","Impressions","Reach","Link clicks","CTR (%)","CPC","CPM"],rows=[h].concat(g.map(function(x){return [x.name,x.date,x.spend,x.leads,x.leads?x.cpl:"",x.imp,x.reach,x.clicks,x.ctr,x.cpc,x.cpm]})),csv=rows.map(function(r){return r.map(function(v){return '"'+String(v==null?"":v).replace(/"/g,'""')+'"'}).join(",")}).join("\r\n"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}));a.download="facebook-ads-performance.csv";a.click()}
-$("file").addEventListener("change",async function(e){var f=e.target.files[0];if(!f)return;try{var ext=f.name.split(".").pop().toLowerCase();if(ext==="csv"||ext==="tsv"||ext==="txt"){var a=parseCSV(await f.text()),h=a[0].map(function(x){return x.trim()}),o=a.slice(1).map(function(r){var z={};h.forEach(function(k,i){z[k]=r[i]||""});return z});load(h,o)}else{if(!window.XLSX)throw Error("Chưa tải được thư viện Excel; hãy thử CSV hoặc kiểm tra kết nối.");var wb=XLSX.read(await f.arrayBuffer(),{type:"array",cellDates:true}),o=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:""});load(Object.keys(o[0]),o)}}catch(err){msg("Lỗi: "+err.message,"warn")}});
+$("file").addEventListener("change",async function(e){var f=e.target.files[0];if(!f)return;try{var ext=f.name.split(".").pop().toLowerCase();if(ext==="csv"||ext==="tsv"||ext==="txt"){var a=parseCSV(await f.text()),h=a[0].map(function(x){return x.trim()}),o=a.slice(1).map(function(r){var z={};h.forEach(function(k,i){z[k]=r[i]||""});return z});load(h,o)}else{if(!window.XLSX)throw Error("Could not load the Excel library. Try a CSV file or check your internet connection.");var wb=XLSX.read(await f.arrayBuffer(),{type:"array",cellDates:true}),o=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:""});load(Object.keys(o[0]),o)}}catch(err){msg("Error: "+err.message,"warn")}});
 $("demo").onclick=function(){var h=["Reporting starts","Campaign name","Campaign objective","Ad set name","Ad name","Amount spent (USD)","Impressions","Reach","Link clicks","Website leads"],o=[];for(var i=0;i<42;i++){var d=new Date();d.setUTCDate(d.getUTCDate()-41+i);var c=i%4===0?"Awareness Brand":i%3?"J-1 Intern":"EB-3 Skilled",im=1600+i*85,cl=20+(i%8)*5,sp=18+(i%7)*6;o.push({"Reporting starts":d.toISOString().slice(0,10),"Campaign name":c,"Campaign objective":i%4===0?"Awareness":"Lead Generation","Ad set name":i%2?"Interest - Marketing":"Lookalike - Leads","Ad name":"Creative "+(i%4+1),"Amount spent (USD)":sp,"Impressions":im,"Reach":Math.round(im*.7),"Link clicks":cl,"Website leads":i%6===0?0:Math.max(1,Math.round(cl/8))})}load(h,o)};
-$("sideUpload").onclick=function(){$("file").click()};$("mapBtn").onclick=applyMap;$("export").onclick=exportCSV;$("campaign").onchange=function(){subs();render()};$("adset").onchange=function(){subs();render()};["ad","from","to","period","level","search","sort","dir","currency","heatMetric","accountReachInput"].forEach(function(id){$(id).addEventListener("input",render)});$("reset").onclick=function(){["from","to","campaign","adset","ad","search"].forEach(function(id){$(id).value=""});buildFilters();render()};$("clear").onclick=function(){S.raw=[];S.headers=[];S.accountSummary=null;$("accountReachInput").value="";$("accountReachInput").value="";$("accountReachHelp").textContent="Nhập Reach từ Meta Total results cho đúng khoảng ngày của file này.";$("kpis").innerHTML="";$("mapping").innerHTML="";$("insights").innerHTML="";$("table").querySelector("thead").innerHTML="";$("table").querySelector("tbody").innerHTML="";$("export").disabled=true;$("mapBtn").disabled=true;msg("Đã xóa dữ liệu")};window.addEventListener("resize",function(){if(S.raw.length)render()});
+$("sideUpload").onclick=function(){$("file").click()};$("mapBtn").onclick=applyMap;$("export").onclick=exportCSV;$("campaign").onchange=function(){subs();render()};$("adset").onchange=function(){subs();render()};["ad","from","to","period","level","search","sort","dir","currency","heatMetric","accountReachInput"].forEach(function(id){$(id).addEventListener("input",render)});$("reset").onclick=function(){["from","to","campaign","adset","ad","search"].forEach(function(id){$(id).value=""});buildFilters();render()};$("clear").onclick=function(){S.raw=[];S.headers=[];S.accountSummary=null;$("accountReachInput").value="";$("accountReachInput").value="";$("accountReachHelp").textContent="Enter Reach from Meta Total results for this report period.";$("kpis").innerHTML="";$("mapping").innerHTML="";$("insights").innerHTML="";$("table").querySelector("thead").innerHTML="";$("table").querySelector("tbody").innerHTML="";$("export").disabled=true;$("mapBtn").disabled=true;msg("Data cleared")};window.addEventListener("resize",function(){if(S.raw.length)render()});
 </script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script></body></html>
