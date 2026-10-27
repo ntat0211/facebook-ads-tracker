@@ -302,7 +302,7 @@ function kpi(a,b,c){return '<div class="kpi"><small>'+a+'</small><strong>'+b+'</
 function ctrLabel(){
  var c=String(S.map.ctr||"");
  if(/ctr\s*\(\s*all\s*\)/i.test(c))return "CTR (all)";
- if(/link/i.test(c))return "CTR (all/link)";
+ if(/link/i.test(c))return "CTR (link)";
  return c?"CTR (export)":"CTR (export unavailable)";
 }
 
@@ -482,7 +482,12 @@ async function ensurePdfLibraries(){
  if(!window.jspdf.jsPDF.API.autoTable)throw new Error("The PDF table plugin did not load.");
 }
 function pdfSafe(v){
- return String(v==null?"":v).replace(/₫/g,"VND ").replace(/€/g,"EUR ").replace(/£/g,"GBP ").replace(/–|—/g,"-").replace(/·/g," | ").replace(/[^\x09\x0A\x0D\x20-\x7E\xA0-\xFF]/g,"");
+ return String(v==null?"":v)
+  .replace(/₫/g,"VND ").replace(/€/g,"EUR ").replace(/£/g,"GBP ")
+  .replace(/Đ/g,"D").replace(/đ/g,"d")
+  .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+  .replace(/–|—/g,"-").replace(/·/g," | ")
+  .replace(/[^\x09\x0A\x0D\x20-\x7E\xA0-\xFF]/g,"");
 }
 function pdfRgb(hex){
  var h=String(hex||"#ffffff").replace("#",""),n=parseInt(h,16);
