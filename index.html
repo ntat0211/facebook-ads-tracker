@@ -70,6 +70,10 @@ button{font-family:inherit;font-size:11px;font-weight:700;border-radius:10px;pad
 .chart-hover-name{color:#667b95}
 .chart-hover-value{font-weight:750;margin-left:auto;padding-left:8px;text-align:right}
 .chart-hover-guide{display:none;position:absolute;z-index:5;top:45px;bottom:34px;width:1px;background:#7c94b3;opacity:.65;pointer-events:none}
+
+.header-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.pdf-export{white-space:nowrap;background:linear-gradient(135deg,#2878f0,#225be6);box-shadow:0 5px 14px #2878f02b}
+.pdf-export:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
 </style></head><body><div class="app-shell">
 <aside class="sidebar">
   <div class="brand"><div class="brand-mark">▥</div><div class="brand-name">Facebook Ads<br>Tracker Pro</div></div>
@@ -86,7 +90,7 @@ button{font-family:inherit;font-size:11px;font-weight:700;border-radius:10px;pad
   <div class="sidebar-bottom"><strong>💡 Quick tip</strong><p>Upload your Meta Ads Manager report (CSV or Excel) to get started.</p><button id="sideUpload" class="side-upload">⇧ Upload Data</button><div class="side-foot">Your reports stay in this browser</div></div>
 </aside>
 <main class="main-content">
-<div class="top page-header" id="overview"><div><div class="page-kicker">AD PERFORMANCE WORKSPACE</div><h1>Overview</h1><div class="muted">Key performance metrics and trends from your Facebook Ads data.</div></div><div class="period-note">▣ &nbsp; Lead Generation · Daily & Weekly</div></div>
+<div class="top page-header" id="overview"><div><div class="page-kicker">AD PERFORMANCE WORKSPACE</div><h1>Overview</h1><div class="muted">Key performance metrics and trends from your Facebook Ads data.</div></div><div class="header-actions"><div class="period-note">Lead Generation · Daily & Weekly</div><button id="pdfExport" class="pdf-export" disabled>↓ Export PDF Report</button></div></div>
 <section class="panel" id="upload-panel"><h2>1. Import Meta Ads Report</h2><div class="row"><div class="filebox"><input id="file" type="file" accept=".csv,.tsv,.txt,.xlsx,.xls"><div class="hint">CSV is recommended. Excel import requires an internet connection to load the spreadsheet library.</div></div><button id="demo" class="alt">Load Sample Data</button><button id="export" class="alt" disabled>Export CSV</button><button id="clear" class="alt">Clear Data</button></div><div id="status" class="status">Upload a report exported from Meta Ads Manager to get started.</div><div class="hint">Export with a daily breakdown and include Campaign name, Campaign objective, Ad set name, Ad name, Amount spent, Impressions, Reach, Link clicks, and one specific Lead result column.</div></section>
 <section class="panel" id="filters"><div class="top"><h2>2. Filters & View Options</h2><div class="row"><label>Gom theo<select id="period"><option value="day">Day</option><option value="week">Week (Mon–Sun)</option></select></label><label>Currency<select id="currency"><option value="auto">Auto-detect</option><option>USD</option><option>VND</option><option>CAD</option><option>AUD</option><option>EUR</option><option>GBP</option><option>SGD</option><option value="other">Other</option></select></label><label>Analysis level<select id="level"><option value="campaign">Campaign</option><option value="adset">Ad Set</option><option value="ad">Ads</option></select></label></div></div><div class="filters"><label>Start date<input id="from" type="date"></label><label>End date<input id="to" type="date"></label><label>Campaign<select id="campaign"><option value="">All</option></select></label><label>Ad Set<select id="adset"><option value="">All</option></select></label><label>Ad<select id="ad"><option value="">All</option></select></label><button id="reset" class="alt">Reset</button></div></section>
 <section class="panel" id="settings"><div class="top"><h2>3. Column Mapping</h2><button id="mapBtn" class="alt" disabled>Apply Mapping</button></div><div id="mapping" class="mapping"></div><div id="mapnote" class="hint"></div></section>
@@ -252,7 +256,7 @@ function load(head,objs){
  }else{
   $("accountReachHelp").textContent="No account-level Reach row was found. Enter Reach from Meta Total results for the same reporting period.";
  }
- buildMap();buildFilters();$("mapBtn").disabled=false;$("export").disabled=false;
+ buildMap();buildFilters();$("mapBtn").disabled=false;$("export").disabled=false;$("pdfExport").disabled=false;
  var statusText="Loaded "+objs.length+" detail rows";
  if(accountSummary)statusText+=" · detected the account Summary row and excluded it from detail calculations";
  if(skippedCount-(accountSummary?1:0)>0)statusText+=" · excluded an additional "+(skippedCount-1)+" aggregate rows";
@@ -451,5 +455,205 @@ function table(rs){var g=groups(rs),q=$("search").value.toLowerCase(),key=$("sor
 function exportCSV(){var g=groups(filtered()),h=["Name","Period","Spend","Leads","CPL","Impressions","Reach","Link clicks","CTR (%)","CPC","CPM"],rows=[h].concat(g.map(function(x){return [x.name,x.date,x.spend,x.leads,x.leads?x.cpl:"",x.imp,x.reach,x.clicks,x.ctr,x.cpc,x.cpm]})),csv=rows.map(function(r){return r.map(function(v){return '"'+String(v==null?"":v).replace(/"/g,'""')+'"'}).join(",")}).join("\r\n"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}));a.download="facebook-ads-performance.csv";a.click()}
 $("file").addEventListener("change",async function(e){var f=e.target.files[0];if(!f)return;try{var ext=f.name.split(".").pop().toLowerCase();if(ext==="csv"||ext==="tsv"||ext==="txt"){var a=parseCSV(await f.text()),h=a[0].map(function(x){return x.trim()}),o=a.slice(1).map(function(r){var z={};h.forEach(function(k,i){z[k]=r[i]||""});return z});load(h,o)}else{if(!window.XLSX)throw Error("Could not load the Excel library. Try a CSV file or check your internet connection.");var wb=XLSX.read(await f.arrayBuffer(),{type:"array",cellDates:true}),o=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:""});load(Object.keys(o[0]),o)}}catch(err){msg("Error: "+err.message,"warn")}});
 $("demo").onclick=function(){var h=["Reporting starts","Campaign name","Campaign objective","Ad set name","Ad name","Amount spent (USD)","Impressions","Reach","Link clicks","Website leads"],o=[];for(var i=0;i<42;i++){var d=new Date();d.setUTCDate(d.getUTCDate()-41+i);var c=i%4===0?"Awareness Brand":i%3?"J-1 Intern":"EB-3 Skilled",im=1600+i*85,cl=20+(i%8)*5,sp=18+(i%7)*6;o.push({"Reporting starts":d.toISOString().slice(0,10),"Campaign name":c,"Campaign objective":i%4===0?"Awareness":"Lead Generation","Ad set name":i%2?"Interest - Marketing":"Lookalike - Leads","Ad name":"Creative "+(i%4+1),"Amount spent (USD)":sp,"Impressions":im,"Reach":Math.round(im*.7),"Link clicks":cl,"Website leads":i%6===0?0:Math.max(1,Math.round(cl/8))})}load(h,o)};
-$("sideUpload").onclick=function(){$("file").click()};$("mapBtn").onclick=applyMap;$("export").onclick=exportCSV;$("campaign").onchange=function(){subs();render()};$("adset").onchange=function(){subs();render()};["ad","from","to","period","level","search","sort","dir","currency","heatMetric","accountReachInput"].forEach(function(id){$(id).addEventListener("input",render)});$("reset").onclick=function(){["from","to","campaign","adset","ad","search"].forEach(function(id){$(id).value=""});buildFilters();render()};$("clear").onclick=function(){S.raw=[];S.headers=[];S.accountSummary=null;$("accountReachInput").value="";$("accountReachInput").value="";$("accountReachHelp").textContent="Enter Reach from Meta Total results for this report period.";$("kpis").innerHTML="";$("mapping").innerHTML="";$("insights").innerHTML="";$("table").querySelector("thead").innerHTML="";$("table").querySelector("tbody").innerHTML="";$("export").disabled=true;$("mapBtn").disabled=true;msg("Data cleared")};window.addEventListener("resize",function(){if(S.raw.length)render()});
+
+function loadPdfLibrary(src,key){
+ return new Promise(function(resolve,reject){
+  var existing=document.querySelector('script[data-pdf-lib="'+key+'"]');
+  if(existing){
+   if(existing.dataset.loaded==="true"){resolve();return;}
+   existing.addEventListener("load",resolve,{once:true});
+   existing.addEventListener("error",function(){reject(new Error("Could not load PDF export library: "+key));},{once:true});
+   return;
+  }
+  var s=document.createElement("script");s.src=src;s.async=true;s.dataset.pdfLib=key;
+  s.onload=function(){s.dataset.loaded="true";resolve();};
+  s.onerror=function(){reject(new Error("Could not load PDF export library: "+key));};
+  document.head.appendChild(s);
+ });
+}
+async function ensurePdfLibraries(){
+ if(!window.jspdf||!window.jspdf.jsPDF){
+  await loadPdfLibrary("https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js","jspdf");
+ }
+ if(!window.jspdf||!window.jspdf.jsPDF)throw new Error("jsPDF did not load.");
+ if(!window.jspdf.jsPDF.API.autoTable){
+  await loadPdfLibrary("https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js","jspdf-autotable");
+ }
+ if(!window.jspdf.jsPDF.API.autoTable)throw new Error("The PDF table plugin did not load.");
+}
+function pdfSafe(v){
+ return String(v==null?"":v).replace(/₫/g,"VND ").replace(/€/g,"EUR ").replace(/£/g,"GBP ").replace(/–|—/g,"-").replace(/·/g," | ").replace(/[^\x09\x0A\x0D\x20-\x7E\xA0-\xFF]/g,"");
+}
+function pdfRgb(hex){
+ var h=String(hex||"#ffffff").replace("#",""),n=parseInt(h,16);
+ return [(n>>16)&255,(n>>8)&255,n&255];
+}
+function pdfAddTitle(doc,title,subtitle,y){
+ var w=doc.internal.pageSize.getWidth();
+ doc.setTextColor(19,42,76);doc.setFont("helvetica","bold");doc.setFontSize(16);doc.text(pdfSafe(title),12,y);
+ doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(99,119,146);
+ doc.text(pdfSafe(subtitle||""),12,y+6);
+ doc.setDrawColor(223,234,247);doc.line(12,y+9,w-12,y+9);
+}
+function pdfCard(doc,x,y,w,h,fill){
+ doc.setFillColor.apply(doc,pdfRgb(fill||"#ffffff"));
+ doc.setDrawColor(222,234,248);
+ doc.roundedRect(x,y,w,h,2.2,2.2,"FD");
+}
+function pdfAddChartCard(doc,id,title,x,y,w,h){
+ pdfCard(doc,x,y,w,h,"#ffffff");
+ doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(24,47,82);
+ doc.text(pdfSafe(title),x+4,y+5.5);
+ var c=$(id);
+ if(!c||!c.width||!c.height){doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(110,128,153);doc.text("No chart data available.",x+4,y+15);return;}
+ try{
+  var data=c.toDataURL("image/png");
+  var maxW=w-6,maxH=h-11,ratio=c.width/c.height,iw=maxW,ih=iw/ratio;
+  if(ih>maxH){ih=maxH;iw=ih*ratio;}
+  doc.addImage(data,"PNG",x+(w-iw)/2,y+8,iw,ih,undefined,"FAST");
+ }catch(e){
+  doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(180,70,50);
+  doc.text("Could not capture this chart.",x+4,y+15);
+ }
+}
+function pdfGetKpis(){
+ return Array.from(document.querySelectorAll("#kpis .kpi")).map(function(card){
+  var small=card.querySelectorAll("small");
+  return {label:small[0]?small[0].innerText.trim():"Metric",value:card.querySelector("strong")?card.querySelector("strong").innerText.trim():"N/A",detail:small[1]?small[1].innerText.trim():""};
+ });
+}
+function pdfGetFilterContext(rows){
+ var dates=rows.map(function(r){return r._date;}).filter(Boolean).sort();
+ var from=$("from").value||dates[0]||"N/A",to=$("to").value||dates[dates.length-1]||"N/A";
+ var period=$("period").selectedOptions[0]?$("period").selectedOptions[0].text:"Daily";
+ var level=$("level").selectedOptions[0]?$("level").selectedOptions[0].text:"Campaign";
+ var campaign=$("campaign").value||"All campaigns",adset=$("adset").value||"All ad sets",ad=$("ad").value||"All ads";
+ return {from:from,to:to,period:period,level:level,campaign:campaign,adset:adset,ad:ad};
+}
+function pdfAddFooters(doc){
+ var total=doc.getNumberOfPages(),w=doc.internal.pageSize.getWidth(),h=doc.internal.pageSize.getHeight();
+ for(var p=1;p<=total;p++){
+  doc.setPage(p);doc.setDrawColor(226,235,246);doc.line(12,h-9,w-12,h-9);
+  doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(112,131,155);
+  doc.text("Facebook Ads Tracker Pro | Generated "+new Date().toLocaleDateString("en-US"),12,h-4);
+  doc.text("Page "+p+" of "+total,w-12,h-4,{align:"right"});
+ }
+}
+async function exportPdfReport(){
+ var btn=$("pdfExport"),oldText=btn.textContent;
+ if(!S.raw.length){alert("Upload a Meta Ads report before exporting a PDF.");return;}
+ btn.disabled=true;btn.textContent="Preparing PDF...";
+ try{
+  await ensurePdfLibraries();
+  var jsPDF=window.jspdf.jsPDF;
+  var doc=new jsPDF({orientation:"landscape",unit:"mm",format:"a4",compress:true});
+  var pageW=doc.internal.pageSize.getWidth(),pageH=doc.internal.pageSize.getHeight(),innerW=pageW-24;
+  var rows=filtered(),context=pdfGetFilterContext(rows),kpis=pdfGetKpis(),generated=new Date().toLocaleString("en-US");
+  doc.setProperties({title:"Facebook Ads Performance Report",subject:"Meta Ads performance analysis",author:"Facebook Ads Tracker Pro",creator:"Facebook Ads Tracker Pro"});
+  // PAGE 1: report context, KPIs and objective split.
+  pdfAddTitle(doc,"Facebook Ads Performance Report","Generated "+generated,15);
+  doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(54,76,105);
+  doc.text(pdfSafe("Reporting period: "+context.from+" to "+context.to+" | Granularity: "+context.period+" | Analysis level: "+context.level),12,31);
+  doc.text(pdfSafe("Campaign: "+context.campaign+" | Ad set: "+context.adset+" | Ad: "+context.ad),12,36);
+  doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(19,42,76);doc.text("Key Performance Indicators",12,44);
+  var gap=3,kpiCols=5,kpiW=(innerW-gap*(kpiCols-1))/kpiCols,kpiH=21,kpiY=48;
+  kpis.forEach(function(k,i){
+   var col=i%kpiCols,row=Math.floor(i/kpiCols),x=12+col*(kpiW+gap),y=kpiY+row*(kpiH+3);
+   pdfCard(doc,x,y,kpiW,kpiH,"#f8fbff");
+   doc.setFont("helvetica","normal");doc.setFontSize(6.8);doc.setTextColor(101,123,153);
+   doc.text(pdfSafe(k.label).slice(0,35),x+3,y+5);
+   doc.setFont("helvetica","bold");doc.setFontSize(k.value.length>13?9:11);doc.setTextColor(20,43,78);
+   doc.text(pdfSafe(k.value).slice(0,28),x+3,y+11.5);
+   doc.setFont("helvetica","normal");doc.setFontSize(5.8);doc.setTextColor(111,132,158);
+   var detail=doc.splitTextToSize(pdfSafe(k.detail),kpiW-6);
+   doc.text(detail.slice(0,1),x+3,y+17);
+  });
+  doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(19,42,76);doc.text("Campaign Objective Mix",12,100);
+  var cw=(innerW-5)/2;
+  pdfAddChartCard(doc,"spie","Spend Share by Objective",12,104,cw,65);
+  pdfAddChartCard(doc,"lpie","Lead Share by Objective",12+cw+5,104,cw,65);
+  doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(98,118,145);
+  doc.text("Note: Account-level Reach/Frequency are taken from the Meta Summary row when available; Reach is not summed across ads or days.",12,176);
+
+  // PAGE 2: performance trend charts.
+  doc.addPage("a4","landscape");
+  pdfAddTitle(doc,"Performance Trends","Time-series charts based on the current dashboard filters.",15);
+  var chartW=(innerW-5)/2;
+  pdfAddChartCard(doc,"trend","Spend & Leads",12,28,chartW,66);
+  pdfAddChartCard(doc,"cpl","Cost per Lead (CPL)",12+chartW+5,28,chartW,66);
+  pdfAddChartCard(doc,"clicktrend","CTR & CPC",12,101,chartW,66);
+  pdfAddChartCard(doc,"reachtrend","Impressions & Reach",12+chartW+5,101,chartW,66);
+
+  // PAGE 3: weekday x time-of-day heatmap and insights.
+  doc.addPage("a4","landscape");
+  pdfAddTitle(doc,"Day & Hour Performance Heatmap","Each cell represents a two-hour slot aggregated by weekday across the selected period.",15);
+  var grid=$("hourHeatGrid"),heatEls=grid?Array.from(grid.children):[],hourCells=grid?Array.from(grid.querySelectorAll(".hour-cell")):[];
+  if(hourCells.length>=84&&heatEls.length>=104){
+   var heatHead=heatEls.slice(0,8).map(function(el){return pdfSafe(el.innerText||el.textContent||"");});
+   var heatBody=[],heatColors=[];
+   for(var hr=0;hr<12;hr++){
+    var vals=[],colors=[];
+    for(var col=0;col<8;col++){
+     var el=heatEls[8+hr*8+col];
+     vals.push(pdfSafe(el?el.innerText||el.textContent:""));
+     var cl=el?el.className:"",bg=el?getComputedStyle(el).backgroundColor:"rgb(248,250,252)";
+     var rgb=bg.match(/\d+/g);colors.push({rgb:rgb?rgb.slice(0,3).map(Number):[248,250,252],cost:cl.indexOf("heat-cost")>=0,header:cl.indexOf("hour-label")>=0});
+    }
+    heatBody.push(vals);heatColors.push(colors);
+   }
+   doc.autoTable({head:[heatHead],body:heatBody,startY:27,margin:{left:12,right:12},styles:{font:"helvetica",fontSize:7.5,cellPadding:2.3,halign:"center",valign:"middle",lineColor:[224,234,247],lineWidth:.2},headStyles:{fillColor:[39,120,240],textColor:[255,255,255],fontStyle:"bold"},columnStyles:{0:{cellWidth:23,halign:"left",fontStyle:"bold"}},didParseCell:function(data){
+    if(data.section==="body"&&heatColors[data.row.index]&&heatColors[data.row.index][data.column.index]){
+     var cell=heatColors[data.row.index][data.column.index];
+     if(data.column.index===0){data.cell.styles.fillColor=[245,248,253];data.cell.styles.textColor=[76,99,130];}
+     else{data.cell.styles.fillColor=cell.rgb;data.cell.styles.textColor=cell.cost&&cell.rgb[0]>220?[105,52,16]:[36,63,96];}
+    }
+   }});
+  }else{
+   doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(99,119,146);
+   doc.text("No Day & Hour breakdown was found in the uploaded report. Export hourly data from Meta Ads Manager to populate this section.",12,31);
+  }
+  var insightTop=doc.lastAutoTable?doc.lastAutoTable.finalY+10:42;
+  if(insightTop>pageH-35){doc.addPage("a4","landscape");insightTop=20;}
+  doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(19,42,76);doc.text("Performance Insights",12,insightTop);
+  var insightCards=Array.from(document.querySelectorAll("#insights .chart")),iy=insightTop+5;
+  if(insightCards.length){
+   var iw=(innerW-6)/3;
+   insightCards.forEach(function(card,i){
+    var x=12+i*(iw+3),title=card.querySelector("b")?card.querySelector("b").innerText:("Insight "+(i+1)),body=card.querySelector("p")?card.querySelector("p").innerText:card.innerText;
+    pdfCard(doc,x,iy,iw,27,"#fbfdff");
+    doc.setFont("helvetica","bold");doc.setFontSize(7);doc.setTextColor(37,77,129);doc.text(pdfSafe(title),x+3,iy+5);
+    doc.setFont("helvetica","normal");doc.setFontSize(6.3);doc.setTextColor(63,82,108);
+    doc.text(doc.splitTextToSize(pdfSafe(body).replace(/\n+/g," | "),iw-6).slice(0,3),x+3,iy+11);
+   });
+  }
+
+  // PAGE 4: the daily/weekly time-series values behind the charts.
+  doc.addPage("a4","landscape");
+  pdfAddTitle(doc,"Trend Data Table","Underlying values for the charts above; grouped by "+context.period.toLowerCase()+".",15);
+  var timeline=ts(rows),trendBody=timeline.map(function(t){
+   return [t.date,cash(t.spend),fnum(t.leads),t.leads?cash(t.cpl):"N/A",t.ctr!==null?fnum(t.ctr,2)+"%":"N/A",fnum(t.clicks),cash(t.cpc),fnum(t.imp)];
+  });
+  doc.autoTable({head:[["Date","Spend","Leads","CPL","CTR (Meta export)","Link clicks","CPC link","Impressions"]],body:trendBody,startY:25,margin:{left:12,right:12,bottom:13},styles:{font:"helvetica",fontSize:7,cellPadding:2.2,overflow:"linebreak",textColor:[40,60,88],lineColor:[228,236,246],lineWidth:.15},headStyles:{fillColor:[39,120,240],textColor:[255,255,255],fontStyle:"bold"},alternateRowStyles:{fillColor:[248,251,255]}});
+  // PAGE 5+: filtered performance table, paginated automatically for long reports.
+  doc.addPage("a4","landscape");
+  pdfAddTitle(doc,"Performance Breakdown","Current level: "+context.level+" | Granularity: "+context.period+" | Rows in the displayed dashboard table.",15);
+  var tableEl=$("table"),head=Array.from(tableEl.querySelectorAll("thead th")).map(function(th){return pdfSafe(th.innerText);});
+  var body=Array.from(tableEl.querySelectorAll("tbody tr")).filter(function(tr){return tr.querySelectorAll("td").length>1;}).map(function(tr){return Array.from(tr.querySelectorAll("td")).map(function(td){return pdfSafe(td.innerText);});});
+  if(head.length&&body.length){
+   doc.autoTable({head:[head],body:body,startY:24,margin:{left:8,right:8,bottom:13},styles:{font:"helvetica",fontSize:5.8,cellPadding:1.5,overflow:"linebreak",textColor:[40,60,88],lineColor:[228,236,246],lineWidth:.15},headStyles:{fillColor:[39,120,240],textColor:[255,255,255],fontStyle:"bold"},alternateRowStyles:{fillColor:[248,251,255]},columnStyles:{0:{cellWidth:46},1:{cellWidth:22}}});
+  }else{
+   doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text("No performance table rows are available for the current filters.",12,30);
+  }
+  pdfAddFooters(doc);
+  var from=context.from.replace(/[^0-9-]/g,""),to=context.to.replace(/[^0-9-]/g,"");
+  doc.save("facebook-ads-report_"+(from||"start")+"_to_"+(to||"end")+".pdf");
+ }catch(err){
+  console.error(err);
+  alert("PDF export failed. "+(err&&err.message?err.message:"Please check your internet connection and try again."));
+ }finally{
+  btn.disabled=!S.raw.length;btn.textContent=oldText;
+ }
+}
+
+$("pdfExport").onclick=exportPdfReport;$("sideUpload").onclick=function(){$("file").click()};$("mapBtn").onclick=applyMap;$("export").onclick=exportCSV;$("campaign").onchange=function(){subs();render()};$("adset").onchange=function(){subs();render()};["ad","from","to","period","level","search","sort","dir","currency","heatMetric","accountReachInput"].forEach(function(id){$(id).addEventListener("input",render)});$("reset").onclick=function(){["from","to","campaign","adset","ad","search"].forEach(function(id){$(id).value=""});buildFilters();render()};$("clear").onclick=function(){S.raw=[];S.headers=[];S.accountSummary=null;$("accountReachInput").value="";$("accountReachInput").value="";$("accountReachHelp").textContent="Enter Reach from Meta Total results for this report period.";$("kpis").innerHTML="";$("mapping").innerHTML="";$("insights").innerHTML="";$("table").querySelector("thead").innerHTML="";$("table").querySelector("tbody").innerHTML="";$("export").disabled=true;$("mapBtn").disabled=true;$("pdfExport").disabled=true;msg("Data cleared")};window.addEventListener("resize",function(){if(S.raw.length)render()});
 </script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script></body></html>
