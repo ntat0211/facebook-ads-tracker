@@ -288,6 +288,119 @@ tr:hover td{background:#f5f9fd}
  .empty-state{align-items:flex-start;flex-wrap:wrap}
  .empty-state button{margin-left:46px}
 }
+</style>
+<style id="visual-balance-pass">
+.main-content{font-size:14px}
+.page-kicker{font-size:10px;letter-spacing:1.35px}
+.page-header h1{font-size:28px;line-height:1.25;letter-spacing:-.75px}
+.page-header .muted{font-size:12px}
+.panel{padding:17px 18px;border-radius:16px}
+.panel h2{font-size:16px;line-height:1.35;margin-bottom:4px}
+.panel h3{font-size:12px;line-height:1.4}
+.hint,.muted{font-size:10.5px;line-height:1.55}
+.nav a{font-size:12px;padding:11px}
+.nav a .nav-ico{font-size:18px}
+.brand-name{font-size:14px}
+label{font-size:11px}
+.filters label{font-size:10.5px}
+.filters input,.filters select{height:38px;font-size:11px;padding:9px 10px}
+button{font-size:11px;padding:10px 14px}
+.header-upload,.pdf-export{font-size:11px;padding:11px 15px}
+.report-state{font-size:10px;padding:9px 12px}
+.kpi-panel{padding:17px 18px}
+.kpi-panel .section-heading{margin-bottom:13px}
+.kpis{grid-template-columns:repeat(8,minmax(0,1fr));gap:10px}
+.kpi{min-height:118px;padding:14px 12px 12px;border-radius:13px}
+.kpi-head{gap:8px;margin-bottom:10px}
+.kpi-icon{width:26px;height:26px;flex-basis:26px;border-radius:8px;font-size:14px}
+.kpi .kpi-head small{font-size:10.5px;line-height:1.3}
+.kpi strong{font-size:23px;line-height:1.25;letter-spacing:-.55px}
+.kpi small.kpi-detail{font-size:9.5px;line-height:1.4;margin-top:8px}
+.chart{padding:13px 14px;border-radius:13px}
+.chart h3{font-size:11.5px;margin-bottom:7px}
+.chart canvas{height:230px}
+.main-chart canvas{height:245px}
+.secondary-chart-grid .chart canvas{height:160px}
+.objective-grid{grid-template-columns:1fr;gap:11px}
+.objective-grid .chart{padding:12px 15px 10px}
+.objective-grid .chart canvas{height:230px}
+.objective-grid .hint{font-size:10px}
+.secondary-chart-grid{gap:10px;margin-top:10px}
+.lower-overview{grid-template-columns:minmax(220px,.62fr) minmax(650px,2.12fr) minmax(220px,.62fr);gap:12px}
+.lower-overview>.panel{padding:14px 14px 15px}
+.heat-panel .section-heading{gap:8px}
+.heat-heading label{min-width:100px;max-width:115px;font-size:10px}
+.heat-heading select{font-size:10px;height:34px}
+.hour-heatmap-scroll{overflow-x:visible;padding:4px 0 6px}
+.hour-heatmap-grid{grid-template-columns:54px repeat(7,minmax(0,1fr));gap:3px;min-width:0}
+.hour-head{min-height:26px;font-size:9px;border-radius:6px}
+.hour-label{font-size:9px;display:flex;align-items:center}
+.hour-cell{min-width:0;min-height:25px;height:25px;font-size:8px;border-radius:5px;padding:0 1px;overflow:hidden}
+.heat-summary{font-size:10px;line-height:1.45}
+.heat-legend{font-size:9.5px;gap:4px;flex-wrap:wrap}
+.heat-swatch{width:11px;height:11px}
+.heat-panel>.hint{font-size:9.5px}
+.performance-panel{min-width:0}
+.table-heading{align-items:center}
+.table-heading>div:first-child{flex:1;min-width:175px}
+.table-controls{flex:0 0 auto}
+.table-controls input{width:170px;height:36px;font-size:10.5px}
+.table-controls select{height:36px;font-size:10.5px}
+.tablewrap{max-height:600px}
+table{font-size:10.5px}
+th{font-size:9.5px;padding:11px 10px}
+td{font-size:10px;padding:10px}
+#tableNote{font-size:10px;margin-top:10px}
+.insight-panel .grid{gap:7px}
+.insight-panel .chart{padding:9px 10px}
+.insight-panel .chart b{font-size:10px}
+.insight-panel .chart p{font-size:9.5px;line-height:1.45}
+.insight-panel .chart strong{font-size:15px}
+.insight-footnote{font-size:9px}
+@media(max-width:1450px){
+ .lower-overview{grid-template-columns:minmax(0,1fr) minmax(0,2.2fr)}
+ .heat-panel{grid-column:1;grid-row:1}
+ .performance-panel{grid-column:2;grid-row:1}
+ .insight-panel{grid-column:1/-1;grid-row:2}
+ .insight-panel .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:1120px){
+ .lower-overview{grid-template-columns:1fr}
+ .heat-panel,.performance-panel,.insight-panel{grid-column:auto;grid-row:auto}
+ .heat-panel .hour-heatmap-scroll{overflow-x:auto}
+ .hour-heatmap-grid{min-width:590px}
+ .visual-overview{grid-template-columns:minmax(0,1.4fr) minmax(300px,.9fr)}
+}
+@media(max-width:850px){
+ .page-header h1{font-size:24px}
+ .panel{padding:14px}
+ .panel h2{font-size:15px}
+ .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .kpi{min-height:110px}
+ .kpi strong{font-size:22px}
+ .visual-overview{grid-template-columns:1fr}
+ .objective-grid{grid-template-columns:1fr}
+ .objective-grid .chart canvas{height:230px}
+ .secondary-chart-grid{grid-template-columns:1fr}
+ .secondary-chart-grid .chart canvas{height:185px}
+ .lower-overview{grid-template-columns:1fr}
+ .table-heading{align-items:flex-start;flex-direction:column}
+ .table-controls{width:100%;flex-wrap:wrap}
+ .table-controls input{flex:1;min-width:140px}
+ .insight-panel .grid{grid-template-columns:1fr}
+ .hour-heatmap-scroll{overflow-x:auto}
+ .hour-heatmap-grid{min-width:590px}
+}
+@media(max-width:480px){
+ .kpis{grid-template-columns:1fr 1fr}
+ .kpi{padding:11px 9px;min-height:102px}
+ .kpi strong{font-size:19px}
+ .kpi .kpi-head small{font-size:9.5px}
+ .kpi small.kpi-detail{font-size:8.5px}
+ .filters{grid-template-columns:1fr 1fr}
+ .objective-grid .chart canvas{height:210px}
+}
 </style></head><body><div class="app-shell">
 <aside class="sidebar">
   <div class="brand"><div class="brand-mark"><span class="brand-bars"><i></i><i></i><i></i></span></div><div class="brand-name">Facebook Ads<br>Tracker Pro</div></div>
@@ -652,8 +765,8 @@ function render(){
  drawHeatmap(rs);insight(rs);table(rs);
 }
 function obj(rs,key){var m=new Map();rs.forEach(function(r){var o=r._objective||"Unknown",v=key==="spend"?n(r[S.map.spend]):n(r[S.map.leads]);m.set(o,(m.get(o)||0)+v)});return Array.from(m.entries()).filter(function(x){return x[1]>0}).sort(function(a,b){return b[1]-a[1]})}
-function canvas(id){var c=$(id),w=c.clientWidth||450,h=230,d=window.devicePixelRatio||1;c.width=w*d;c.height=h*d;var x=c.getContext("2d");x.scale(d,d);x.clearRect(0,0,w,h);return {x:x,w:w,h:h}}
-function pie(id,items,label){var z=canvas(id),x=z.x,w=z.w,h=z.h,total=items.reduce(function(s,v){return s+v[1]},0),colors=["#0d4d86","#277fbd","#62a9d9","#91c4e8","#b5d9f2","#557d9f","#a5b8c9"];if(!total){x.fillStyle="#7890a8";x.font="11px Montserrat,Arial,sans-serif";x.fillText("No data for "+label,12,30);return}var cx=w/2,cy=76,r=Math.min(51,w*.22),inner=r*.66,start=-Math.PI/2;items.forEach(function(v,i){var end=start+v[1]/total*Math.PI*2;x.beginPath();x.arc(cx,cy,r,start,end);x.arc(cx,cy,inner,end,start,true);x.closePath();x.fillStyle=colors[i%colors.length];x.fill();start=end});x.textAlign="center";x.fillStyle="#163b60";x.font="800 13px Montserrat,Arial,sans-serif";x.fillText(label==="Spend"?cash(total):fnum(total),cx,cy+2);x.fillStyle="#7890a8";x.font="9px Montserrat,Arial,sans-serif";x.fillText(label==="Spend"?"Total Spend":"Total Leads",cx,cy+16);x.textAlign="left";var max=Math.min(items.length,3),legendY=145;items.slice(0,max).forEach(function(v,i){var y=legendY+i*15;x.fillStyle=colors[i%colors.length];x.beginPath();x.arc(14,y-3,4,0,Math.PI*2);x.fill();x.fillStyle="#45617c";x.font="9px Montserrat,Arial,sans-serif";x.fillText(String(v[0]).slice(0,17),25,y);x.fillStyle="#183c60";x.font="700 9px Montserrat,Arial,sans-serif";x.textAlign="right";x.fillText(fnum(v[1]/total*100,1)+"%",w-9,y);x.textAlign="left"});}
+function canvas(id){var c=$(id),w=Math.max(120,c.clientWidth||450),h=Math.max(120,c.clientHeight||230),d=window.devicePixelRatio||1;c.width=Math.round(w*d);c.height=Math.round(h*d);var x=c.getContext("2d");x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,w,h);return {x:x,w:w,h:h}}
+function pie(id,items,label){var z=canvas(id),x=z.x,w=z.w,h=z.h,total=items.reduce(function(s,v){return s+v[1]},0),colors=["#0d4d86","#277fbd","#62a9d9","#91c4e8","#b5d9f2","#557d9f","#a5b8c9"];if(!total){x.fillStyle="#7890a8";x.font="12px Montserrat,Arial,sans-serif";x.fillText("No data for "+label,12,30);return}var cx=w/2,cy=Math.min(88,h*.39),r=Math.max(46,Math.min(74,w*.22,cy-8,(h-cy-58))),inner=r*.66,start=-Math.PI/2;items.forEach(function(v,i){var end=start+v[1]/total*Math.PI*2;x.beginPath();x.arc(cx,cy,r,start,end);x.arc(cx,cy,inner,end,start,true);x.closePath();x.fillStyle=colors[i%colors.length];x.fill();start=end});x.textAlign="center";x.fillStyle="#163b60";x.font="800 15px Montserrat,Arial,sans-serif";x.fillText(label==="Spend"?cash(total):fnum(total),cx,cy+2);x.fillStyle="#7890a8";x.font="10px Montserrat,Arial,sans-serif";x.fillText(label==="Spend"?"Total Spend":"Total Leads",cx,cy+18);x.textAlign="left";var max=Math.min(items.length,4),legendY=Math.min(h-12,cy+r+21);items.slice(0,max).forEach(function(v,i){var y=legendY+i*15;x.fillStyle=colors[i%colors.length];x.beginPath();x.arc(14,y-3,4,0,Math.PI*2);x.fill();x.fillStyle="#45617c";x.font="10px Montserrat,Arial,sans-serif";var name=String(v[0]);if(name.length>34)name=name.slice(0,32)+"…";x.fillText(name,25,y);x.fillStyle="#183c60";x.font="700 10px Montserrat,Arial,sans-serif";x.textAlign="right";x.fillText(fnum(v[1]/total*100,1)+"%",w-9,y);x.textAlign="left"});}
 function axes(x,w,h,max,labels){var l=42,r=10,t=20,b=30,pw=w-l-r,ph=h-t-b;x.font="9px Montserrat,Arial,sans-serif";for(var i=0;i<5;i++){var y=t+ph*i/4;x.strokeStyle="#e7eef5";x.beginPath();x.moveTo(l,y);x.lineTo(w-r,y);x.stroke();x.fillStyle="#7188a1";x.fillText(fnum(max*(1-i/4),max<10?1:0),2,y+3)}labels.forEach(function(s,i){if(labels.length<10||i%Math.ceil(labels.length/7)===0){x.fillStyle="#7188a1";x.fillText(String(s).slice(5,10),l+i*pw/Math.max(1,labels.length-1)-12,h-8)}});return {l:l,t:t,pw:pw,ph:ph}}
 
 function chartKey(label){var s=String(label||"").toLowerCase();if(s.indexOf("spend")>=0)return "spend";if(s.indexOf("lead")>=0||s.indexOf("result")>=0)return "leads";if(s.indexOf("cpl")>=0||s.indexOf("cost per lead")>=0)return "cpl";if(s.indexOf("ctr")>=0)return "ctr";if(s.indexOf("cpc")>=0)return "cpc";if(s.indexOf("impression")>=0)return "imp";if(s.indexOf("reach")>=0)return "reach";if(s.indexOf("click")>=0)return "clicks";return "number";}
@@ -718,7 +831,7 @@ function drawHeatmap(rows){
  grid.innerHTML="";
  if(!hourly.length){
    grid.innerHTML='<div class="hint" style="grid-column:1/-1;padding:18px;background:#f8fbff;border:1px dashed #cad9eb;border-radius:10px">No hourly data was found. A daily-only report cannot reveal time-of-day performance. Export from Meta Ads Manager with a <b>Day & Hour / Hour of day</b> breakdown, or map the correct Hour of day column in Column Mapping.</div>';
-   summary.textContent="No data for giờ hợp lệ.";
+   summary.textContent="No data for the selected date and time filters.";
    note.textContent="Export hourly data to analyze delivery by time of day.";
    return;
  }
