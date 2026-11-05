@@ -74,52 +74,350 @@ button{font-family:inherit;font-size:11px;font-weight:700;border-radius:10px;pad
 .header-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
 .pdf-export{white-space:nowrap;background:linear-gradient(135deg,#2878f0,#225be6);box-shadow:0 5px 14px #2878f02b}
 .pdf-export:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+</style>
+<style id="blue-dashboard-refresh">
+:root{--bg:#f5f8fc;--card:#fff;--ink:#102a4c;--muted:#637b98;--line:#e2ebf5;--blue:#1768b7;--blue-dark:#0d477d;--blue-mid:#328bd0;--blue-light:#72b7e8;--pale:#eaf4ff;--green:#13885e;--red:#cc4d4d}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Montserrat',Arial,sans-serif}
+.app-shell{grid-template-columns:224px minmax(0,1fr);background:var(--bg)}
+.sidebar{background:#fff;border-right:1px solid var(--line);padding:24px 15px 17px;gap:23px;box-shadow:4px 0 18px rgba(20,55,92,.025)}
+.brand{padding:0 5px 19px;border-bottom:1px solid #edf2f8;gap:11px}
+.brand-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,#68b8ef,#1767b6);box-shadow:0 7px 16px rgba(31,115,185,.18)}
+.brand-bars{height:22px;display:flex;gap:3px;align-items:end}
+.brand-bars i{display:block;width:5px;border-radius:2px 2px 0 0;background:white}
+.brand-bars i:nth-child(1){height:10px}.brand-bars i:nth-child(2){height:16px}.brand-bars i:nth-child(3){height:22px}
+.brand-name{font-size:13px;color:#143252;letter-spacing:-.35px}
+.nav{gap:5px}
+.nav a{color:#425d7b;border-radius:10px;padding:10px 11px;font-size:11px;font-weight:700;transition:background .15s,color .15s}
+.nav a .nav-ico{color:#6684a5;font-size:17px}
+.nav a:hover{background:#f2f7fd;color:var(--blue)}
+.nav a.active{background:#e8f3ff;color:#155fa7}
+.nav a.active .nav-ico{color:#1768b7}
+.sidebar-bottom{background:linear-gradient(145deg,#f1f7fd,#f8fbff);border:1px solid #e4edf7;border-radius:14px;padding:14px 12px}
+.sidebar-bottom strong{display:block;color:#183b61;font-size:11px}
+.sidebar-bottom p{font-size:10px;color:#6b829e;margin:6px 0 11px}
+.meta-mark{font-size:27px;line-height:1;color:#1768b7;font-weight:800;margin-bottom:6px}
+.side-upload,.header-upload{background:linear-gradient(135deg,#1c75c3,#0d4d86);box-shadow:0 5px 12px rgba(23,104,183,.15);color:#fff}
+.side-upload{width:100%;font-size:10px;padding:10px}
+.side-foot{font-size:9px;color:#8b9db1}
+.main-content{max-width:1760px;padding:23px 25px 38px}
+.page-header{margin:0 0 16px;align-items:center;gap:16px}
+.page-kicker{font-size:9px;letter-spacing:1.25px;font-weight:800;color:#6e8ba9}
+.page-header h1{font-size:25px;line-height:1.25;letter-spacing:-.8px;font-weight:800;color:#102b4c}
+.page-header .muted{font-size:10px;margin-top:5px}
+.header-actions{display:flex;align-items:center;gap:8px}
+.report-state{font-size:9px;font-weight:700;color:#7b8fa8;background:#f2f6fa;border:1px solid #e3ebf3;border-radius:100px;padding:8px 10px;white-space:nowrap}
+.report-state.loaded{color:#126b50;background:#eaf8f1;border-color:#ccebdd}
+.header-upload,.pdf-export{white-space:nowrap;border-radius:9px;font-size:10px;padding:10px 13px}
+.pdf-export{background:#edf5fd;color:#164e83;border:1px solid #d7e7f7;box-shadow:none}
+.pdf-export:disabled{opacity:.42}
+.panel{background:#fff;border:1px solid #e4ebf3;border-radius:15px;padding:15px 16px;margin:0 0 13px;box-shadow:0 3px 10px rgba(19,52,86,.045)}
+.panel h2{font-size:13px;letter-spacing:-.2px;font-weight:800;color:#123252;margin:0 0 3px}
+.panel h3{font-size:10px;font-weight:800;color:#173c61;margin:0 0 8px}
+.hint,.muted{color:#758ba4}.hint{font-size:9px;line-height:1.55}
+.filter-panel{padding:13px 15px 14px}
+.filter-heading,.section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}
+.filter-heading>div,.section-heading>div{min-width:0}
+.filter-heading .hint,.section-heading .hint{margin:2px 0 0}
+.filters{display:grid;grid-template-columns:repeat(8,minmax(100px,1fr));gap:9px;align-items:end;margin:0}
+.filters label{min-width:0;display:flex;flex-direction:column;gap:4px;font-size:9px;font-weight:700;color:#6c829c}
+.filters input,.filters select{width:100%;height:35px;padding:8px 9px;font-size:10px;background:#fff}
+.reset-button{align-self:end}
+button{font-family:'Montserrat',Arial,sans-serif;background:linear-gradient(135deg,#1c75c3,#0d4d86);border-radius:9px;padding:9px 12px;font-size:10px;font-weight:800;box-shadow:0 4px 10px rgba(23,104,183,.12)}
+button.alt{background:#edf5fd;color:#215b91;border:1px solid #dce9f6;box-shadow:none}
+button:hover{filter:brightness(.98);transform:translateY(-1px)}
+input,select{font:500 10px 'Montserrat',Arial,sans-serif;border:1px solid #dbe5f0;border-radius:8px;padding:9px 10px;color:#1c3959;background:#fff;outline:none}
+input:focus,select:focus{border-color:#7bb5e5;box-shadow:0 0 0 3px rgba(42,132,197,.11)}
+label{font-size:9px;color:#6c829c}
+.kpi-panel{padding:14px 15px 15px}
+.kpi-panel .section-heading{margin-bottom:10px}
+.kpis{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:9px}
+.kpi{position:relative;min-width:0;min-height:104px;background:#fff;border:1px solid #e4ebf3;border-radius:12px;padding:12px 10px 10px;box-shadow:0 3px 10px rgba(15,47,79,.04);overflow:hidden}
+.kpi:after{display:none}
+.kpi:first-child{background:linear-gradient(145deg,#176db9,#0c477e);border-color:#0f5797;box-shadow:0 5px 14px rgba(17,82,138,.15)}
+.kpi-head{display:flex;align-items:center;gap:6px;margin-bottom:8px;min-width:0}
+.kpi-icon{width:22px;height:22px;flex:0 0 22px;display:grid;place-items:center;border-radius:7px;background:#eaf4fd;color:#1c6fb7;font-size:12px;font-weight:800}
+.kpi:first-child .kpi-icon{background:rgba(255,255,255,.16);color:#fff}
+.kpi .kpi-head small{font-size:9px;font-weight:750;line-height:1.2;color:#58728f;white-space:normal}
+.kpi:first-child .kpi-head small{color:#eaf5ff}
+.kpi strong{display:block;font-size:17px;line-height:1.35;letter-spacing:-.45px;font-weight:800;color:#102e4e;overflow-wrap:anywhere}
+.kpi:first-child strong{color:#fff}
+.kpi small.kpi-detail{display:block;margin-top:7px;color:#8294a9;font-size:8px;line-height:1.35;font-weight:500}
+.kpi:first-child small.kpi-detail{color:#d7eafa}
+.empty-state{display:flex;align-items:center;gap:12px;padding:15px 14px;margin-top:2px;border:1px dashed #cbdcec;background:#f8fbfe;border-radius:11px;color:#54708d}
+.empty-state .empty-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#e7f2fd;color:#1c6fb7;font-size:20px;font-weight:800}
+.empty-state strong{font-size:11px;color:#173c61}
+.empty-state p{margin:2px 0 0;font-size:9px}
+.empty-state button{margin-left:auto;white-space:nowrap}
+.visual-overview{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(340px,.95fr);gap:13px;align-items:stretch}
+.visual-overview>.panel{min-width:0;margin:0 0 13px}
+.trend-panel .section-heading,.objective-panel .section-heading{margin-bottom:8px}
+.chart{min-width:0;background:#fff;border:1px solid #e6edf5;border-radius:12px;padding:11px 12px;box-shadow:0 2px 8px rgba(15,47,79,.025)}
+.chart canvas{display:block;width:100%;height:220px}
+.main-chart{padding:11px 13px 8px}
+.main-chart canvas{height:228px}
+.secondary-chart-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:9px}
+.secondary-chart-grid .chart{padding:9px 10px}
+.secondary-chart-grid .chart canvas{height:145px}
+.objective-grid{display:grid;grid-template-columns:1fr;gap:9px}
+.objective-grid .chart{padding:11px 10px 8px}
+.objective-grid .chart canvas{height:185px}
+.objective-grid .hint{margin-top:2px}
+.lower-overview{display:grid;grid-template-columns:minmax(255px,.85fr) minmax(410px,1.5fr) minmax(220px,.78fr);gap:13px;align-items:stretch}
+.lower-overview>.panel{min-width:0;margin:0 0 13px}
+.heat-panel .section-heading{align-items:flex-start}
+.heat-heading label{min-width:108px}
+.heat-heading select{width:100%;margin-top:4px}
+.heat-summary{font-size:9px;color:#69809a;margin:6px 0 8px}
+.hour-heatmap-scroll{overflow:auto;padding:5px 0 7px}
+.hour-heatmap-grid{min-width:630px;gap:4px}
+.hour-head{background:#f0f6fc;border-color:#e0eaf4;color:#476987;font-size:9px}
+.hour-label{font-size:9px;color:#6d829a}
+.hour-cell{border:1px solid rgba(40,105,160,.08);border-radius:5px;font-size:8px;min-height:30px}
+.heat-level-0{background:#f1f7fd;color:#7690aa}
+.heat-level-1{background:#d9eaf9;color:#456b91}
+.heat-level-2{background:#a9d0ef;color:#234f78}
+.heat-level-3{background:#65a8dc;color:#fff}
+.heat-level-4{background:#155c9d;color:#fff}
+.heat-cost.heat-level-0{background:#f1f7fd;color:#7690aa}
+.heat-cost.heat-level-1{background:#d9eaf9;color:#456b91}
+.heat-cost.heat-level-2{background:#a9d0ef;color:#234f78}
+.heat-cost.heat-level-3{background:#65a8dc;color:#fff}
+.heat-cost.heat-level-4{background:#155c9d;color:#fff}
+.heat-legend{gap:5px;margin:5px 0 8px;font-size:9px;color:#6c829c}
+.heat-swatch{width:12px;height:12px;border-radius:3px}
+.heat-legend-note{margin-left:4px}
+.performance-panel{display:flex;flex-direction:column}
+.table-heading{align-items:flex-start;gap:12px;margin-bottom:10px}
+.table-controls{justify-content:flex-end;flex-wrap:wrap;gap:6px}
+.table-controls input{width:150px}
+.table-controls select{min-width:95px}
+.tablewrap{overflow:auto;max-height:520px;border:1px solid #e4ebf3;border-radius:9px}
+table{font-family:'Montserrat',Arial,sans-serif;font-size:9px;white-space:nowrap}
+th{background:#eef5fc;color:#42627f;font-size:8px;font-weight:800;padding:10px 9px;border-bottom:1px solid #dfe9f4}
+td{padding:9px;border-bottom:1px solid #edf2f7;color:#34516e}
+td:first-child{font-weight:700;color:#183b5f}
+tr:hover td{background:#f5f9fd}
+#tableNote{margin-top:8px}
+.insight-panel .grid{display:grid;grid-template-columns:1fr;gap:8px}
+.insight-panel .chart{padding:10px 11px;background:#fbfdff}
+.insight-panel .chart b{font-size:9px;color:#476886}
+.insight-panel .chart p{font-size:9px;color:#4e6883;margin:6px 0 0;line-height:1.5;overflow-wrap:anywhere}
+.insight-panel .chart strong{color:#164f82;font-size:14px}
+.insight-footnote{margin-top:8px}
+.advanced-settings{margin:2px 0 0;background:#fff;border:1px solid #e2eaf3;border-radius:13px;box-shadow:0 3px 10px rgba(19,52,86,.035);overflow:hidden}
+.advanced-settings>summary{display:flex;align-items:center;gap:10px;cursor:pointer;list-style:none;padding:13px 15px;color:#1a4268}
+.advanced-settings>summary::-webkit-details-marker{display:none}
+.settings-icon{width:28px;height:28px;display:grid;place-items:center;border-radius:8px;background:#eaf4fd;color:#1b70b8;font-size:14px}
+.advanced-settings summary strong{display:block;font-size:10px;font-weight:800}
+.advanced-settings summary small{display:block;font-size:9px;color:#7b90a7;margin-top:2px}
+.summary-chevron{margin-left:auto;color:#6a86a2;font-size:15px}
+.advanced-settings[open] .summary-chevron{transform:rotate(180deg)}
+.settings-grid{padding:0 13px 13px;display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
+.settings-grid>.panel{margin:0;padding:13px}
+.settings-grid>.account-settings-panel,.settings-grid>.note-panel{grid-column:1/-1}
+.filebox{background:#f8fbfe;border:1px dashed #c6d9eb;border-radius:10px;padding:10px}
+.filebox input{width:100%;font-size:10px}
+.mapping{display:grid;grid-template-columns:repeat(3,minmax(130px,1fr));gap:8px}
+.mapping label{font-size:9px}.mapping select{width:100%}
+.account-reach-control{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:11px 12px;margin:0;border:1px solid #e0eaf4;background:#f7fafd;border-radius:10px}
+.account-reach-copy{flex:1;min-width:230px}.account-reach-copy strong{font-size:10px;color:#214b70}
+.account-reach-control label{min-width:180px;max-width:230px}.account-reach-control input{width:100%;font-size:11px}
+.account-reach-control #accountReachHelp{flex-basis:100%;margin:0}
+.note{background:#f1f7fd;border:1px solid #e1ebf5;border-radius:10px;padding:12px;color:#526e8a;font-size:9px}
+.status{font-size:10px;margin-top:9px}
+.status.ok{color:#13885e}.status.warn{color:#9a6a20}
+.chart-hover-tooltip{border:1px solid #dce9f6!important;background:rgba(255,255,255,.97)!important;box-shadow:0 7px 22px rgba(18,56,94,.13)!important;border-radius:9px!important;color:#1b3858!important}
+.chart-hover-date{color:#15395e!important}
+.chart-hover-guide{background:#5595c6!important}
+@media(max-width:1450px){
+ .kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .filters{grid-template-columns:repeat(4,minmax(120px,1fr))}
+ .lower-overview{grid-template-columns:minmax(240px,.8fr) minmax(400px,1.4fr)}
+ .insight-panel{grid-column:1/-1}
+ .insight-panel .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:1100px){
+ .app-shell{grid-template-columns:190px minmax(0,1fr)}
+ .main-content{padding:18px}
+ .visual-overview{grid-template-columns:1fr}
+ .objective-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .objective-grid .chart canvas{height:180px}
+ .lower-overview{grid-template-columns:1fr}
+ .heat-panel{min-width:0}
+ .insight-panel{grid-column:auto}
+ .insight-panel .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:780px){
+ .app-shell{grid-template-columns:1fr}
+ .sidebar{position:relative;height:auto;overflow:visible;padding:11px 12px;gap:10px;border-right:0;border-bottom:1px solid var(--line)}
+ .brand{padding:0 3px 9px;border-bottom:0}
+ .brand-mark{width:32px;height:32px}
+ .brand-name{font-size:12px}
+ .nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+ .nav a{padding:7px 3px;justify-content:center;flex-direction:column;gap:2px;font-size:8px}
+ .nav a .nav-ico{font-size:14px}
+ .sidebar-bottom{display:none}
+ .main-content{padding:12px}
+ .page-header{align-items:flex-start;flex-direction:column}
+ .page-header h1{font-size:21px}
+ .header-actions{width:100%;flex-wrap:wrap}
+ .report-state{margin-right:auto}
+ .filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .filters label{min-width:0}
+ .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .visual-overview{grid-template-columns:1fr}
+ .secondary-chart-grid{grid-template-columns:1fr}
+ .secondary-chart-grid .chart canvas{height:170px}
+ .objective-grid{grid-template-columns:1fr}
+ .objective-grid .chart canvas{height:190px}
+ .lower-overview{grid-template-columns:1fr}
+ .insight-panel .grid{grid-template-columns:1fr}
+ .settings-grid{grid-template-columns:1fr}
+ .settings-grid>.account-settings-panel,.settings-grid>.note-panel{grid-column:auto}
+ .mapping{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .table-heading{flex-direction:column;align-items:stretch}
+ .table-controls{justify-content:flex-start}
+ .table-controls input{flex:1;min-width:120px}
+}
+@media(max-width:430px){
+ .filter-heading{align-items:flex-start;flex-direction:column}
+ .filters{grid-template-columns:1fr 1fr}
+ .mapping{grid-template-columns:1fr}
+ .header-upload,.pdf-export{flex:1}
+ .empty-state{align-items:flex-start;flex-wrap:wrap}
+ .empty-state button{margin-left:46px}
+}
 </style></head><body><div class="app-shell">
 <aside class="sidebar">
-  <div class="brand"><div class="brand-mark">▥</div><div class="brand-name">Facebook Ads<br>Tracker Pro</div></div>
-  <nav class="nav">
+  <div class="brand"><div class="brand-mark"><span class="brand-bars"><i></i><i></i><i></i></span></div><div class="brand-name">Facebook Ads<br>Tracker Pro</div></div>
+  <nav class="nav" aria-label="Main navigation">
     <a class="active" href="#overview"><span class="nav-ico">⌂</span>Overview</a>
     <a href="#performance"><span class="nav-ico">◫</span>Campaigns</a>
-    <a href="#filters"><span class="nav-ico">▦</span>Ad Sets</a>
+    <a href="#performance"><span class="nav-ico">▦</span>Ad Sets</a>
     <a href="#performance"><span class="nav-ico">▧</span>Ads</a>
     <a href="#trends"><span class="nav-ico">⌁</span>Trends</a>
-    <a href="#objectives"><span class="nav-ico">◉</span>Objective Analysis</a>
+    <a href="#dailyHeatmap"><span class="nav-ico">▦</span>Heatmap</a>
     <a href="#datatable"><span class="nav-ico">▤</span>Data Table</a>
     <a href="#settings"><span class="nav-ico">⚙</span>Settings</a>
   </nav>
-  <div class="sidebar-bottom"><strong>💡 Quick tip</strong><p>Upload your Meta Ads Manager report (CSV or Excel) to get started.</p><button id="sideUpload" class="side-upload">⇧ Upload Data</button><div class="side-foot">Your reports stay in this browser</div></div>
-</aside>
-<main class="main-content">
-<div class="top page-header" id="overview"><div><div class="page-kicker">AD PERFORMANCE WORKSPACE</div><h1>Overview</h1><div class="muted">Key performance metrics and trends from your Facebook Ads data.</div></div><div class="header-actions"><div class="period-note">Lead Generation · Daily & Weekly</div><button id="pdfExport" class="pdf-export" disabled>↓ Export PDF Report</button></div></div>
-<section class="panel" id="upload-panel"><h2>1. Import Meta Ads Report</h2><div class="row"><div class="filebox"><input id="file" type="file" accept=".csv,.tsv,.txt,.xlsx,.xls"><div class="hint">CSV is recommended. Excel import requires an internet connection to load the spreadsheet library.</div></div><button id="demo" class="alt">Load Sample Data</button><button id="export" class="alt" disabled>Export CSV</button><button id="clear" class="alt">Clear Data</button></div><div id="status" class="status">Upload a report exported from Meta Ads Manager to get started.</div><div class="hint">Export with a daily breakdown and include Campaign name, Campaign objective, Ad set name, Ad name, Amount spent, Impressions, Reach, Link clicks, and one specific Lead result column.</div></section>
-<section class="panel" id="filters"><div class="top"><h2>2. Filters & View Options</h2><div class="row"><label>Gom theo<select id="period"><option value="day">Day</option><option value="week">Week (Mon–Sun)</option></select></label><label>Currency<select id="currency"><option value="auto">Auto-detect</option><option>USD</option><option>VND</option><option>CAD</option><option>AUD</option><option>EUR</option><option>GBP</option><option>SGD</option><option value="other">Other</option></select></label><label>Analysis level<select id="level"><option value="campaign">Campaign</option><option value="adset">Ad Set</option><option value="ad">Ads</option></select></label></div></div><div class="filters"><label>Start date<input id="from" type="date"></label><label>End date<input id="to" type="date"></label><label>Campaign<select id="campaign"><option value="">All</option></select></label><label>Ad Set<select id="adset"><option value="">All</option></select></label><label>Ad<select id="ad"><option value="">All</option></select></label><button id="reset" class="alt">Reset</button></div></section>
-<section class="panel" id="settings"><div class="top"><h2>3. Column Mapping</h2><button id="mapBtn" class="alt" disabled>Apply Mapping</button></div><div id="mapping" class="mapping"></div><div id="mapnote" class="hint"></div></section>
-<section class="panel"><h2>4. KPI Overview</h2>
-<div class="account-reach-control">
- <div class="account-reach-copy"><strong>Account-level Reach</strong><div class="hint">Enter Reach from Meta’s <b>Total results</b> row for the same reporting period. Reach and Frequency must not be summed across ads or days.</div></div>
- <label>Meta Total Reach<input id="accountReachInput" type="number" min="0" step="1" placeholder="e.g. 99007"></label>
- <div id="accountReachHelp" class="hint">Applies only to the full account view, not when filtering an individual Campaign, Ad Set, or Ad.</div>
-</div>
-<div id="kpis" class="kpis"></div></section>
-<section class="panel" id="objectives"><h2>5. Campaign Spend & Leads by Objective</h2><div class="grid"><div class="chart"><h3>Spend Share</h3><canvas id="spie"></canvas><div class="hint">Spend allocation by objective for the current filters.</div></div><div class="chart"><h3>Lead Share</h3><canvas id="lpie"></canvas><div class="hint">Lead allocation by objective. If the file has no objective column, the dashboard infers an objective from the campaign name; verify inferred labels.</div></div></div></section>
-<section class="panel" id="trends"><h2>6. Performance Trends Over Time</h2><div class="grid"><div class="chart"><h3>Spend & Leads</h3><canvas id="trend"></canvas></div><div class="chart"><h3>CPL Over Time</h3><canvas id="cpl"></canvas></div><div class="chart"><h3>CTR & CPC Over Time</h3><canvas id="clicktrend"></canvas></div><div class="chart"><h3>Impressions & Reach</h3><canvas id="reachtrend"></canvas></div></div></section>
-
-<section class="panel" id="dailyHeatmap">
-  <div class="top"><div><h2>7. Day & Hour Performance Heatmap</h2><div class="hint">See which two-hour periods generate more results by day of week. Each cell aggregates matching time slots across the selected date range.</div></div>
-    <label>Metric<select id="heatMetric"><option value="leads">Leads / Results</option><option value="spend">Spend</option><option value="cpl">Cost per Lead (CPL)</option><option value="imp">Impressions</option><option value="clicks">Link clicks</option><option value="ctr">CTR (all/link)</option><option value="cpc">CPC link</option></select></label>
+  <div class="sidebar-bottom">
+    <div class="meta-mark">∞</div>
+    <strong>Meta Ads Reports</strong>
+    <p>Upload an Ads Manager export to explore your campaign performance.</p>
+    <button id="sideUpload" class="side-upload">↑ Upload Report</button>
+    <div class="side-foot">Reports stay in this browser</div>
   </div>
-  <div id="heatSummary" class="heat-summary">Upload a report broken down by Day & Hour to populate this heatmap.</div>
-  <div class="hour-heatmap-scroll"><div id="hourHeatGrid" class="hour-heatmap-grid"></div></div>
-  <div class="heat-legend"><span>Low</span><i class="heat-swatch heat-level-0"></i><i class="heat-swatch heat-level-1"></i><i class="heat-swatch heat-level-2"></i><i class="heat-swatch heat-level-3"></i><i class="heat-swatch heat-level-4"></i><span>High</span><span id="heatLegendNote" class="heat-legend-note"></span></div>
-  <div class="hint">Hover over or tap a cell to view its day/time slot and metrics. For CPL/CPC, darker orange means higher cost. A daily-only report cannot reveal hourly performance.</div>
-</section>
+</aside>
 
+<main class="main-content">
+  <header class="top page-header" id="overview">
+    <div class="header-copy">
+      <div class="page-kicker">META ADS · PERFORMANCE WORKSPACE</div>
+      <h1>Ads Performance Dashboard</h1>
+      <div class="muted">A clear view of spend, leads, efficiency and delivery.</div>
+    </div>
+    <div class="header-actions">
+      <span class="report-state" id="reportState">No report loaded</span>
+      <button id="headerUpload" class="header-upload">↑ Upload Report</button>
+      <button id="pdfExport" class="pdf-export" disabled>↓ Export PDF</button>
+    </div>
+  </header>
 
-<section class="panel"><h2>8. Performance Insights</h2><div id="insights" class="grid"></div><div class="hint">These are diagnostic cues, not a substitute for reviewing Lead quality or your target CPL.</div></section>
-<section class="panel" id="performance"><div class="top"><h2 id="datatable">9. Performance Table</h2><div class="row"><input id="search" placeholder="Search campaigns, ad sets, or ads…"><select id="sort"><option value="spend">Sort by: Spend</option><option value="leads">Leads</option><option value="cpl">CPL</option><option value="ctr">CTR</option><option value="clicks">Link clicks</option></select><select id="dir"><option value="desc">Descending</option><option value="asc">Ascending</option></select></div></div><div class="tablewrap"><table id="table"><thead></thead><tbody></tbody></table></div><div id="tableNote" class="hint"></div></section>
-<section class="panel"><div class="note"><b>Note:</b> Meta’s “Results” can represent different actions. Map one specific Lead column, or confirm that the Results column represents Leads. CPL = Spend / Leads. CTR is imported from Meta’s selected CTR column, not recalculated from clicks. CPC link = Spend / Link clicks. Reach can overlap across days. Changing currency changes display formatting only; it does not convert currencies.</div></section>
-</main></div>
-<script>
+  <section class="panel filter-panel" id="filters">
+    <div class="filter-heading">
+      <div><h2>Filters & View Options</h2><p class="hint">Choose a reporting period, objective scope and analysis level.</p></div>
+      <button id="reset" class="alt reset-button">Reset filters</button>
+    </div>
+    <div class="filters">
+      <label>Start date<input id="from" type="date"></label>
+      <label>End date<input id="to" type="date"></label>
+      <label>Group by<select id="period"><option value="day">Day</option><option value="week">Week (Mon–Sun)</option></select></label>
+      <label>Currency<select id="currency"><option value="auto">Auto-detect</option><option>USD</option><option>VND</option><option>CAD</option><option>AUD</option><option>EUR</option><option>GBP</option><option>SGD</option><option value="other">Other</option></select></label>
+      <label>Analysis level<select id="level"><option value="campaign">Campaign</option><option value="adset">Ad Set</option><option value="ad">Ads</option></select></label>
+      <label>Campaign<select id="campaign"><option value="">All</option></select></label>
+      <label>Ad Set<select id="adset"><option value="">All</option></select></label>
+      <label>Ad<select id="ad"><option value="">All</option></select></label>
+    </div>
+  </section>
+
+  <section class="panel kpi-panel">
+    <div class="section-heading"><div><h2>Key Performance Indicators</h2><p class="hint">Account-level totals for the selected scope.</p></div></div>
+    <div id="kpis" class="kpis"></div>
+    <div id="kpiEmpty" class="empty-state"><span class="empty-icon">↥</span><div><strong>Your dashboard is ready</strong><p>Upload a Meta Ads Manager report to populate KPIs, trends, objective breakdowns and insights.</p></div><button id="emptyUpload" class="alt">Choose report</button></div>
+  </section>
+
+  <div class="visual-overview">
+    <section class="panel trend-panel" id="trends">
+      <div class="section-heading"><div><h2>Performance Over Time</h2><p class="hint">Daily movement in spend and lead volume.</p></div></div>
+      <div class="chart main-chart"><h3>Spend & Leads</h3><canvas id="trend"></canvas></div>
+      <div class="secondary-chart-grid">
+        <div class="chart"><h3>Cost per Lead (CPL)</h3><canvas id="cpl"></canvas></div>
+        <div class="chart"><h3>CTR & CPC</h3><canvas id="clicktrend"></canvas></div>
+        <div class="chart"><h3>Impressions & Reach</h3><canvas id="reachtrend"></canvas></div>
+      </div>
+    </section>
+
+    <section class="panel objective-panel" id="objectives">
+      <div class="section-heading"><div><h2>Objective Breakdown</h2><p class="hint">See where spend and leads are distributed.</p></div></div>
+      <div class="objective-grid">
+        <div class="chart"><h3>Spend by Objective</h3><canvas id="spie"></canvas><div class="hint">Share of total spend.</div></div>
+        <div class="chart"><h3>Leads by Objective</h3><canvas id="lpie"></canvas><div class="hint">Share of total leads.</div></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="lower-overview">
+    <section class="panel heat-panel" id="dailyHeatmap">
+      <div class="section-heading heat-heading">
+        <div><h2>Performance by Day & Hour</h2><p class="hint">Two-hour delivery windows by weekday.</p></div>
+        <label>Metric<select id="heatMetric"><option value="leads">Leads / Results</option><option value="spend">Spend</option><option value="cpl">Cost per Lead (CPL)</option><option value="imp">Impressions</option><option value="clicks">Link clicks</option><option value="ctr">CTR (all/link)</option><option value="cpc">CPC link</option></select></label>
+      </div>
+      <div id="heatSummary" class="heat-summary">Upload a report with a Day & Hour breakdown to populate this heatmap.</div>
+      <div class="hour-heatmap-scroll"><div id="hourHeatGrid" class="hour-heatmap-grid"></div></div>
+      <div class="heat-legend"><span>Low</span><i class="heat-swatch heat-level-0"></i><i class="heat-swatch heat-level-1"></i><i class="heat-swatch heat-level-2"></i><i class="heat-swatch heat-level-3"></i><i class="heat-swatch heat-level-4"></i><span>High</span><span id="heatLegendNote" class="heat-legend-note"></span></div>
+      <div class="hint">Hover or tap a cell to see its metrics. A daily-only report cannot show hourly performance.</div>
+    </section>
+
+    <section class="panel performance-panel" id="performance">
+      <div class="top table-heading"><div><h2 id="datatable">Top Campaign Performance</h2><p class="hint">Compare performance at Campaign, Ad Set or Ad level.</p></div><div class="row table-controls"><input id="search" placeholder="Search campaigns, ad sets or ads…"><select id="sort"><option value="spend">Sort by: Spend</option><option value="leads">Leads</option><option value="cpl">CPL</option><option value="ctr">CTR</option><option value="clicks">Link clicks</option></select><select id="dir"><option value="desc">Descending</option><option value="asc">Ascending</option></select></div></div>
+      <div class="tablewrap"><table id="table"><thead></thead><tbody></tbody></table></div>
+      <div id="tableNote" class="hint"></div>
+    </section>
+
+    <section class="panel insight-panel">
+      <div class="section-heading"><div><h2>Key Insights</h2><p class="hint">Useful signals from the current selection.</p></div></div>
+      <div id="insights" class="grid"></div>
+      <div class="hint insight-footnote">Diagnostic cues only. Review lead quality and your target CPL before making budget decisions.</div>
+    </section>
+  </div>
+
+  <details class="advanced-settings" id="settings">
+    <summary><span class="settings-icon">⚙</span><span><strong>Data Settings</strong><small>Upload report, adjust column mapping and account-level Reach</small></span><span class="summary-chevron">⌄</span></summary>
+    <div class="settings-grid">
+      <section class="panel" id="upload-panel">
+        <h2>Import Meta Ads Report</h2>
+        <div class="row"><div class="filebox"><input id="file" type="file" accept=".csv,.tsv,.txt,.xlsx,.xls"><div class="hint">CSV is recommended. Excel import requires an internet connection to load the spreadsheet library.</div></div><button id="demo" class="alt">Load Sample Data</button><button id="export" class="alt" disabled>Export CSV</button><button id="clear" class="alt">Clear Data</button></div>
+        <div id="status" class="status">Upload a report exported from Meta Ads Manager to get started.</div>
+        <div class="hint">Recommended fields: date, campaign, objective, ad set, ad, amount spent, impressions, Reach, link clicks, and one specific Lead result column.</div>
+      </section>
+      <section class="panel mapping-panel">
+        <div class="top"><h2>Column Mapping</h2><button id="mapBtn" class="alt" disabled>Apply Mapping</button></div>
+        <div id="mapping" class="mapping"></div><div id="mapnote" class="hint"></div>
+      </section>
+      <section class="panel account-settings-panel">
+        <h2>Account-level Reach</h2>
+        <div class="account-reach-control">
+          <div class="account-reach-copy"><strong>Use Meta Total Results Reach</strong><div class="hint">Reach is deduplicated. Do not sum it across ads or days. Frequency should come from the account Summary row when available.</div></div>
+          <label>Meta Total Reach<input id="accountReachInput" type="number" min="0" step="1" placeholder="e.g. 99007"></label>
+          <div id="accountReachHelp" class="hint">Applies only to the full account view, not when filtering an individual Campaign, Ad Set or Ad.</div>
+        </div>
+      </section>
+      <section class="panel note-panel"><div class="note"><b>Metric notes:</b> CTR is imported from Meta's selected CTR column, not recalculated from link clicks. CPL = Spend / Leads. CPC link = Spend / Link clicks. Reach and Frequency are account-level metrics; changing currency changes display formatting only and does not convert currencies.</div></section>
+    </div>
+  </details>
+</main>
+</div><script>
 var $=function(id){return document.getElementById(id)},S={headers:[],raw:[],map:{},cur:"",accountSummary:null};
 var F=[
 ["date","Reporting Date",["reporting starts","date","day","start date","start date","day & hour","day and hour"]],
@@ -265,7 +563,7 @@ function load(head,objs){
  $("mapnote").textContent="Auto-detected currency: "+(S.cur||"unknown")+". The Summary row is used for account-level Reach/Frequency and excluded from Campaign/Ad/Day detail totals.";
  render();
 }
-function msg(s,c){$("status").textContent=s;$("status").className="status "+(c||"")}
+function msg(s,c){$("status").textContent=s;$("status").className="status "+(c||"");var state=$("reportState");if(state){state.textContent=S.raw.length?"Report loaded · "+S.raw.length+" rows":"No report loaded";state.className="report-state "+(S.raw.length?"loaded":"")}}
 function buildMap(){ $("mapping").innerHTML=F.map(function(f){return '<label>'+f[1]+'<select data-k="'+f[0]+'"><option value="">— Not used —</option>'+S.headers.map(function(h){return '<option '+(h===S.map[f[0]]?"selected":"")+' value="'+esc(h)+'">'+esc(h)+'</option>'}).join("")+'</select></label>'}).join("")}
 function applyMap(){document.querySelectorAll("[data-k]").forEach(function(el){S.map[el.dataset.k]=el.value});S.raw=S.raw.map(function(r){var c=r[S.map.campaign]||"(Unknown campaign)";r._date=date(r[S.map.date]);r._hour=parseHour(r[S.map.hour],r[S.map.date]);r._campaign=String(c);r._objective=infer(r[S.map.objective],c);r._adset=String(r[S.map.adset]||"(Unknown ad set)");r._ad=String(r[S.map.ad]||"(Unknown ad)");return r});buildFilters();render();msg("Mapping applied. Compare Spend and Leads with Ads Manager to validate the results.","ok")}
 function fill(id,vals){var e=$(id),old=e.value;e.innerHTML='<option value="">All</option>'+vals.map(function(v){return '<option value="'+esc(v)+'">'+esc(v)+'</option>'}).join("");if(vals.indexOf(old)>=0)e.value=old}
@@ -298,7 +596,7 @@ function metric(rs){
 function week(d){var x=new Date(d+"T12:00:00Z");x.setUTCDate(x.getUTCDate()-((x.getUTCDay()+6)%7));return x.toISOString().slice(0,10)}
 function ts(rs){var map=new Map();rs.forEach(function(r){var d=r._date||"No date";if($("period").value==="week"&&d!=="No date")d=week(d);if(!map.has(d))map.set(d,[]);map.get(d).push(r)});return Array.from(map.entries()).map(function(e){return Object.assign({date:e[0]},metric(e[1]))}).sort(function(a,b){return a.date.localeCompare(b.date)})}
 function groups(rs){var map=new Map(),level=$("level").value;rs.forEach(function(r){var nm=level==="campaign"?r._campaign:level==="adset"?r._adset:r._ad,d=r._date||"No date";if($("period").value==="week"&&d!=="No date")d=week(d);var k=nm+"|"+d;if(!map.has(k))map.set(k,{name:nm,date:d,rs:[]});map.get(k).rs.push(r)});return Array.from(map.values()).map(function(g){return Object.assign(g,metric(g.rs))})}
-function kpi(a,b,c){return '<div class="kpi"><small>'+a+'</small><strong>'+b+'</strong><small>'+c+'</small></div>'}
+function kpi(a,b,c){var icons={"Spend":"↗","Leads":"♙","Cost per Lead (CPL)":"◎","Cost per Lead":"◎","CTR (all)":"%","CTR (link)":"%","CTR (export)":"%","CTR (export unavailable)":"%","Link Clicks":"↗","Link clicks":"↗","Impressions":"▥","Account Reach":"◉","Frequency":"⌁","Account Frequency":"⌁"};return '<div class="kpi"><div class="kpi-head"><span class="kpi-icon">'+(icons[a]||"•")+'</span><small>'+a+'</small></div><strong>'+b+'</strong><small class="kpi-detail">'+c+'</small></div>'}
 function ctrLabel(){
  var c=String(S.map.ctr||"");
  if(/ctr\s*\(\s*all\s*\)/i.test(c))return "CTR (all)";
@@ -308,6 +606,7 @@ function ctrLabel(){
 
 function render(){
  if(!S.raw.length)return;
+ if($("kpiEmpty"))$("kpiEmpty").style.display="none";
  var rs=filtered(),m=metric(rs);
  var hasFilters=!!$("campaign").value||!!$("adset").value||!!$("ad").value;
  var from=$("from").value,to=$("to").value;
@@ -335,16 +634,14 @@ function render(){
  }else{
   $("accountReachHelp").textContent="You are viewing a filtered subset or a different period; account-level Reach/Frequency are not applied to this view.";
  }
- $("kpis").innerHTML=kpi("Spend",cash(m.spend),"Tổng spend")+
+ $("kpis").innerHTML=kpi("Spend",cash(m.spend),"Total amount spent")+
  kpi("Leads",fnum(m.leads),"From the mapped Lead column")+
- kpi("Cost per Lead",m.leads?cash(m.spend/m.leads):"—","Spend / Leads")+
- kpi(ctrLabel(),m.ctr!==null?fnum(m.ctr,2)+"%":"N/A","Imported directly from "+(S.map.ctr||"CTR column not mapped"))+
- kpi("Link clicks",fnum(m.clicks),"Total link clicks")+
- kpi("CPC link",cash(m.clicks?m.spend/m.clicks:0),"Spend / Clicks")+
- kpi("Impressions",fnum(m.imp),"Tổng impressions")+
- kpi("CPM",cash(m.imp?1000*m.spend/m.imp:0),"Cost per 1,000 impressions")+
- kpi("Account Reach",accountReach!==null?fnum(accountReach):"N/A",accountReach!==null?(useAccountSummary?"Meta Summary · account-level":"Manually entered account Reach"):"Reach is not summed across ads/days")+
- kpi("Account Frequency",accountFrequency!==null?fnum(accountFrequency,2):"N/A",accountFrequency!==null?(useAccountSummary?"Meta Summary · account-level":"Impressions / Account Reach"):"Account Summary for the same period is required");
+ kpi("Cost per Lead (CPL)",m.leads?cash(m.spend/m.leads):"—","Spend / Leads")+
+ kpi(ctrLabel(),m.ctr!==null?fnum(m.ctr,2)+"%":"N/A","Imported from Meta's "+(S.map.ctr||"CTR column not mapped"))+
+ kpi("Link Clicks",fnum(m.clicks),"Total link clicks")+
+ kpi("Impressions",fnum(m.imp),"Total impressions")+
+ kpi("Account Reach",accountReach!==null?fnum(accountReach):"N/A",accountReach!==null?(useAccountSummary?"Meta Summary · account-level":"Manually entered account Reach"):"Not summed across ads/days")+
+ kpi("Frequency",accountFrequency!==null?fnum(accountFrequency,2):"N/A",accountFrequency!==null?(useAccountSummary?"Meta Summary · account-level":"Impressions / Account Reach"):"Requires account Summary for this period");
  var t=ts(rs);
  pie("spie",obj(rs,"spend"),"Spend");pie("lpie",obj(rs,"leads"),"Leads");
  dual("trend",t.map(function(x){return x.spend}),t.map(function(x){return x.leads}),t.map(function(x){return x.date}),"Spend","Leads");
@@ -356,8 +653,8 @@ function render(){
 }
 function obj(rs,key){var m=new Map();rs.forEach(function(r){var o=r._objective||"Unknown",v=key==="spend"?n(r[S.map.spend]):n(r[S.map.leads]);m.set(o,(m.get(o)||0)+v)});return Array.from(m.entries()).filter(function(x){return x[1]>0}).sort(function(a,b){return b[1]-a[1]})}
 function canvas(id){var c=$(id),w=c.clientWidth||450,h=230,d=window.devicePixelRatio||1;c.width=w*d;c.height=h*d;var x=c.getContext("2d");x.scale(d,d);x.clearRect(0,0,w,h);return {x:x,w:w,h:h}}
-function pie(id,items,label){var z=canvas(id),x=z.x,w=z.w,h=z.h,total=items.reduce(function(s,v){return s+v[1]},0),colors=["#2878f0","#2ec99a","#ff8a34","#8755f5","#f255a5","#11b9cf","#98a8bc"];if(!total){x.fillStyle="#667085";x.fillText("No data for "+label,15,30);return}var cx=Math.min(110,w*.27),cy=h/2,r=72,s=-Math.PI/2;items.forEach(function(v,i){var e=s+v[1]/total*Math.PI*2;x.beginPath();x.moveTo(cx,cy);x.arc(cx,cy,r,s,e);x.closePath();x.fillStyle=colors[i%colors.length];x.fill();s=e});var lx=Math.min(cx+r+18,w*.53),max=Math.floor((h-18)/25);items.slice(0,max).forEach(function(v,i){var y=18+i*25;x.fillStyle=colors[i%colors.length];x.fillRect(lx,y,9,9);x.fillStyle="#172033";x.font="11px system-ui";x.fillText(v[0].slice(0,22),lx+14,y+8);x.fillStyle="#667085";x.fillText(fnum(v[1])+" · "+fnum(v[1]/total*100,1)+"%",lx+14,y+20)});}
-function axes(x,w,h,max,labels){var l=42,r=10,t=20,b=30,pw=w-l-r,ph=h-t-b;x.font="10px system-ui";for(var i=0;i<5;i++){var y=t+ph*i/4;x.strokeStyle="#e7ebf2";x.beginPath();x.moveTo(l,y);x.lineTo(w-r,y);x.stroke();x.fillStyle="#667085";x.fillText(fnum(max*(1-i/4),max<10?1:0),2,y+3)}labels.forEach(function(s,i){if(labels.length<10||i%Math.ceil(labels.length/7)===0){x.fillStyle="#667085";x.fillText(String(s).slice(5,10),l+i*pw/Math.max(1,labels.length-1)-12,h-8)}});return {l:l,t:t,pw:pw,ph:ph}}
+function pie(id,items,label){var z=canvas(id),x=z.x,w=z.w,h=z.h,total=items.reduce(function(s,v){return s+v[1]},0),colors=["#0d4d86","#277fbd","#62a9d9","#91c4e8","#b5d9f2","#557d9f","#a5b8c9"];if(!total){x.fillStyle="#7890a8";x.font="11px Montserrat,Arial,sans-serif";x.fillText("No data for "+label,12,30);return}var cx=w/2,cy=76,r=Math.min(51,w*.22),inner=r*.66,start=-Math.PI/2;items.forEach(function(v,i){var end=start+v[1]/total*Math.PI*2;x.beginPath();x.arc(cx,cy,r,start,end);x.arc(cx,cy,inner,end,start,true);x.closePath();x.fillStyle=colors[i%colors.length];x.fill();start=end});x.textAlign="center";x.fillStyle="#163b60";x.font="800 13px Montserrat,Arial,sans-serif";x.fillText(label==="Spend"?cash(total):fnum(total),cx,cy+2);x.fillStyle="#7890a8";x.font="9px Montserrat,Arial,sans-serif";x.fillText(label==="Spend"?"Total Spend":"Total Leads",cx,cy+16);x.textAlign="left";var max=Math.min(items.length,3),legendY=145;items.slice(0,max).forEach(function(v,i){var y=legendY+i*15;x.fillStyle=colors[i%colors.length];x.beginPath();x.arc(14,y-3,4,0,Math.PI*2);x.fill();x.fillStyle="#45617c";x.font="9px Montserrat,Arial,sans-serif";x.fillText(String(v[0]).slice(0,17),25,y);x.fillStyle="#183c60";x.font="700 9px Montserrat,Arial,sans-serif";x.textAlign="right";x.fillText(fnum(v[1]/total*100,1)+"%",w-9,y);x.textAlign="left"});}
+function axes(x,w,h,max,labels){var l=42,r=10,t=20,b=30,pw=w-l-r,ph=h-t-b;x.font="9px Montserrat,Arial,sans-serif";for(var i=0;i<5;i++){var y=t+ph*i/4;x.strokeStyle="#e7eef5";x.beginPath();x.moveTo(l,y);x.lineTo(w-r,y);x.stroke();x.fillStyle="#7188a1";x.fillText(fnum(max*(1-i/4),max<10?1:0),2,y+3)}labels.forEach(function(s,i){if(labels.length<10||i%Math.ceil(labels.length/7)===0){x.fillStyle="#7188a1";x.fillText(String(s).slice(5,10),l+i*pw/Math.max(1,labels.length-1)-12,h-8)}});return {l:l,t:t,pw:pw,ph:ph}}
 
 function chartKey(label){var s=String(label||"").toLowerCase();if(s.indexOf("spend")>=0)return "spend";if(s.indexOf("lead")>=0||s.indexOf("result")>=0)return "leads";if(s.indexOf("cpl")>=0||s.indexOf("cost per lead")>=0)return "cpl";if(s.indexOf("ctr")>=0)return "ctr";if(s.indexOf("cpc")>=0)return "cpc";if(s.indexOf("impression")>=0)return "imp";if(s.indexOf("reach")>=0)return "reach";if(s.indexOf("click")>=0)return "clicks";return "number";}
 function chartValue(key,v){if(v===null||v===undefined||!isFinite(Number(v)))return "N/A";if(key==="spend"||key==="cpl"||key==="cpc"||key==="cpm")return cash(v);if(key==="ctr")return fnum(v,2)+"%";return fnum(v);}
@@ -396,18 +693,18 @@ function attachChartHover(id,labels,series,p){
 }
 function dual(id,a,b,labels,la,lb){
  var z=canvas(id),x=z.x,w=z.w,h=z.h,ma=Math.max(1,...a.filter(function(v){return v!==null&&isFinite(v)})),mb=Math.max(1,...b.filter(function(v){return v!==null&&isFinite(v)})),p=axes(x,w,h,ma,labels);
- x.font="11px Montserrat, Arial, sans-serif";x.fillStyle="#2878f0";x.fillText(la,p.l,p.t+10);x.fillStyle="#2ec99a";x.fillText(lb,p.l+100,p.t+10);
- function draw(vals,max,color){if(!vals.length)return;x.beginPath();vals.forEach(function(v,i){var xx=p.l+(vals.length===1?p.pw/2:i*p.pw/Math.max(1,vals.length-1)),yy=p.t+p.ph-(v||0)/max*p.ph;if(i===0)x.moveTo(xx,yy);else x.lineTo(xx,yy)});x.strokeStyle=color;x.lineWidth=2.4;x.stroke();}
- draw(a,ma,"#2878f0");draw(b,mb,"#2ec99a");
- attachChartHover(id,labels,[{name:la,key:chartKey(la),values:a,color:"#2878f0"},{name:lb,key:chartKey(lb),values:b,color:"#2ec99a"}],p);
+ x.font="10px Montserrat, Arial, sans-serif";x.fillStyle="#155f9f";x.fillText(la,p.l,p.t+10);x.fillStyle="#65a9d7";x.fillText(lb,p.l+100,p.t+10);
+ function draw(vals,max,color){if(!vals.length)return;x.beginPath();vals.forEach(function(v,i){var xx=p.l+(vals.length===1?p.pw/2:i*p.pw/Math.max(1,vals.length-1)),yy=p.t+p.ph-(v||0)/max*p.ph;if(i===0)x.moveTo(xx,yy);else x.lineTo(xx,yy)});x.strokeStyle=color;x.lineWidth=2.5;x.lineJoin="round";x.lineCap="round";x.stroke();vals.forEach(function(v,i){if(v===null||!isFinite(v))return;var xx=p.l+(vals.length===1?p.pw/2:i*p.pw/Math.max(1,vals.length-1)),yy=p.t+p.ph-(v||0)/max*p.ph;x.beginPath();x.arc(xx,yy,2.6,0,Math.PI*2);x.fillStyle=color;x.fill();});}
+ draw(a,ma,"#155f9f");draw(b,mb,"#65a9d7");
+ attachChartHover(id,labels,[{name:la,key:chartKey(la),values:a,color:"#155f9f"},{name:lb,key:chartKey(lb),values:b,color:"#65a9d7"}],p);
 }
 function line(id,vals,labels,title){
  var z=canvas(id),x=z.x,maxValue=Math.max(1,...vals.filter(function(v){return v!==null&&isFinite(v)})),p=axes(x,z.w,z.h,maxValue,labels);
- x.fillStyle="#2878f0";x.font="11px Montserrat, Arial, sans-serif";x.fillText(title,p.l,p.t+10);
+ x.fillStyle="#155f9f";x.font="10px Montserrat, Arial, sans-serif";x.fillText(title,p.l,p.t+10);
  x.beginPath();var started=false;
  vals.forEach(function(v,i){if(v===null||!isFinite(v))return;var xx=p.l+(vals.length===1?p.pw/2:i*p.pw/Math.max(1,vals.length-1)),yy=p.t+p.ph-v/maxValue*p.ph;if(!started){x.moveTo(xx,yy);started=true;}else x.lineTo(xx,yy);});
- if(started){x.strokeStyle="#ff8a34";x.lineWidth=2.4;x.stroke();}
- attachChartHover(id,labels,[{name:title,key:chartKey(title),values:vals,color:"#ff8a34"}],p);
+ if(started){x.strokeStyle="#2c83c3";x.lineWidth=2.5;x.lineJoin="round";x.lineCap="round";x.stroke();}
+ attachChartHover(id,labels,[{name:title,key:chartKey(title),values:vals,color:"#2c83c3"}],p);
 }
 function heatmapMetricValue(m,key){return key==="spend"?m.spend:key==="leads"?m.leads:key==="cpl"?m.cpl:key==="imp"?m.imp:key==="reach"?m.reach:key==="ctr"?m.ctr:key==="cpc"?m.cpc:0}
 
@@ -660,5 +957,5 @@ async function exportPdfReport(){
  }
 }
 
-$("pdfExport").onclick=exportPdfReport;$("sideUpload").onclick=function(){$("file").click()};$("mapBtn").onclick=applyMap;$("export").onclick=exportCSV;$("campaign").onchange=function(){subs();render()};$("adset").onchange=function(){subs();render()};["ad","from","to","period","level","search","sort","dir","currency","heatMetric","accountReachInput"].forEach(function(id){$(id).addEventListener("input",render)});$("reset").onclick=function(){["from","to","campaign","adset","ad","search"].forEach(function(id){$(id).value=""});buildFilters();render()};$("clear").onclick=function(){S.raw=[];S.headers=[];S.accountSummary=null;$("accountReachInput").value="";$("accountReachInput").value="";$("accountReachHelp").textContent="Enter Reach from Meta Total results for this report period.";$("kpis").innerHTML="";$("mapping").innerHTML="";$("insights").innerHTML="";$("table").querySelector("thead").innerHTML="";$("table").querySelector("tbody").innerHTML="";$("export").disabled=true;$("mapBtn").disabled=true;$("pdfExport").disabled=true;msg("Data cleared")};window.addEventListener("resize",function(){if(S.raw.length)render()});
+$("pdfExport").onclick=exportPdfReport;$("sideUpload").onclick=function(){$("file").click()};$("headerUpload").onclick=function(){$("file").click()};$("emptyUpload").onclick=function(){$("file").click()};$("mapBtn").onclick=applyMap;$("export").onclick=exportCSV;$("campaign").onchange=function(){subs();render()};$("adset").onchange=function(){subs();render()};["ad","from","to","period","level","search","sort","dir","currency","heatMetric","accountReachInput"].forEach(function(id){$(id).addEventListener("input",render)});$("reset").onclick=function(){["from","to","campaign","adset","ad","search"].forEach(function(id){$(id).value=""});buildFilters();render()};$("clear").onclick=function(){S.raw=[];S.headers=[];S.accountSummary=null;$("accountReachInput").value="";$("accountReachHelp").textContent="Enter Reach from Meta Total results for this report period.";$("kpis").innerHTML="";$("kpiEmpty").style.display="flex";$("mapping").innerHTML="";$("insights").innerHTML="";$("table").querySelector("thead").innerHTML="";$("table").querySelector("tbody").innerHTML="";$("hourHeatGrid").innerHTML="";$("heatSummary").textContent="Upload a report with a Day & Hour breakdown to populate this heatmap.";$("export").disabled=true;$("mapBtn").disabled=true;$("pdfExport").disabled=true;msg("Data cleared")};window.addEventListener("resize",function(){if(S.raw.length)render()});
 </script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script></body></html>
