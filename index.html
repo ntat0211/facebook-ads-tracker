@@ -401,6 +401,70 @@ td{font-size:10px;padding:10px}
  .filters{grid-template-columns:1fr 1fr}
  .objective-grid .chart canvas{height:210px}
 }
+</style>
+<style id="dashboard-layout-preview">
+.visual-overview{grid-template-columns:minmax(0,1.65fr) minmax(0,.95fr);align-items:stretch;gap:13px}
+.visual-overview>.panel{height:100%;min-height:0}
+.trend-panel,.objective-panel{display:flex;flex-direction:column}
+.trend-panel .main-chart canvas{height:275px}
+.secondary-chart-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.secondary-chart-grid .chart canvas{height:180px}
+.objective-grid{grid-template-columns:1fr;gap:9px;flex:1}
+.objective-grid .chart{padding:11px 13px 8px;min-height:0}
+.objective-grid .chart canvas{height:160px}
+.objective-grid .chart h3{font-size:11.5px;min-height:0;margin-bottom:2px}
+.objective-grid .chart .hint{font-size:9.5px;line-height:1.35;min-height:0;margin-top:0}
+.objective-panel .section-heading{margin-bottom:9px}
+.lower-overview{grid-template-columns:minmax(320px,.95fr) minmax(700px,2.3fr) minmax(240px,.78fr);align-items:start;gap:12px}
+.lower-overview>.panel{height:auto;min-height:0;align-self:start;margin:0 0 13px}
+.heat-panel{padding:15px 15px 14px}
+.heat-panel .section-heading{align-items:flex-start;gap:9px}
+.heat-heading label{min-width:105px;max-width:120px}
+.hour-heatmap-scroll{overflow-x:visible;padding:4px 0 6px}
+.hour-heatmap-grid{grid-template-columns:58px repeat(7,minmax(0,1fr));min-width:0;gap:4px}
+.hour-head{min-height:29px;font-size:9.5px}
+.hour-label{font-size:9.5px}
+.hour-cell{min-width:0;min-height:29px;height:29px;font-size:8.5px;padding:0 1px;overflow:hidden}
+.heat-summary{font-size:10px;line-height:1.45}
+.heat-panel>.hint{font-size:9.5px;line-height:1.45}
+.performance-panel{padding:15px 15px 14px;min-width:0}
+.performance-panel .tablewrap{max-height:600px}
+.performance-panel table{font-size:10.5px}
+.performance-panel th{font-size:9.5px;padding:11px 10px}
+.performance-panel td{font-size:10px;padding:10px}
+.insight-panel{padding:15px 15px 14px}
+.insight-panel .grid{grid-template-columns:1fr;gap:8px}
+.insight-panel .chart{padding:10px 11px}
+.insight-panel .chart p{font-size:9.5px;line-height:1.45}
+.insight-panel .chart strong{font-size:15px}
+@media(max-width:1450px){
+ .visual-overview{grid-template-columns:minmax(0,1.45fr) minmax(0,.95fr)}
+ .lower-overview{grid-template-columns:minmax(280px,.95fr) minmax(0,2.2fr);align-items:start}
+ .heat-panel{grid-column:1;grid-row:1}
+ .performance-panel{grid-column:2;grid-row:1}
+ .insight-panel{grid-column:1/-1;grid-row:2}
+ .insight-panel .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .hour-heatmap-scroll{overflow-x:auto}
+ .hour-heatmap-grid{min-width:570px}
+}
+@media(max-width:1120px){
+ .visual-overview{grid-template-columns:1fr}
+ .lower-overview{grid-template-columns:1fr;align-items:stretch}
+ .heat-panel,.performance-panel,.insight-panel{grid-column:auto;grid-row:auto}
+ .hour-heatmap-scroll{overflow-x:auto}
+ .hour-heatmap-grid{min-width:590px}
+ .insight-panel .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:850px){
+ .secondary-chart-grid{grid-template-columns:1fr}
+ .secondary-chart-grid .chart canvas{height:190px}
+ .objective-grid .chart canvas{height:185px}
+ .lower-overview{grid-template-columns:1fr}
+ .heat-panel,.performance-panel,.insight-panel{height:auto}
+ .hour-heatmap-scroll{overflow-x:auto}
+ .hour-heatmap-grid{min-width:590px}
+ .insight-panel .grid{grid-template-columns:1fr}
+}
 </style></head><body><div class="app-shell">
 <aside class="sidebar">
   <div class="brand"><div class="brand-mark"><span class="brand-bars"><i></i><i></i><i></i></span></div><div class="brand-name">Facebook Ads<br>Tracker Pro</div></div>
@@ -766,7 +830,16 @@ function render(){
 }
 function obj(rs,key){var m=new Map();rs.forEach(function(r){var o=r._objective||"Unknown",v=key==="spend"?n(r[S.map.spend]):n(r[S.map.leads]);m.set(o,(m.get(o)||0)+v)});return Array.from(m.entries()).filter(function(x){return x[1]>0}).sort(function(a,b){return b[1]-a[1]})}
 function canvas(id){var c=$(id),w=Math.max(120,c.clientWidth||450),h=Math.max(120,c.clientHeight||230),d=window.devicePixelRatio||1;c.width=Math.round(w*d);c.height=Math.round(h*d);var x=c.getContext("2d");x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,w,h);return {x:x,w:w,h:h}}
-function pie(id,items,label){var z=canvas(id),x=z.x,w=z.w,h=z.h,total=items.reduce(function(s,v){return s+v[1]},0),colors=["#0d4d86","#277fbd","#62a9d9","#91c4e8","#b5d9f2","#557d9f","#a5b8c9"];if(!total){x.fillStyle="#7890a8";x.font="12px Montserrat,Arial,sans-serif";x.fillText("No data for "+label,12,30);return}var cx=w/2,cy=Math.min(88,h*.39),r=Math.max(46,Math.min(74,w*.22,cy-8,(h-cy-58))),inner=r*.66,start=-Math.PI/2;items.forEach(function(v,i){var end=start+v[1]/total*Math.PI*2;x.beginPath();x.arc(cx,cy,r,start,end);x.arc(cx,cy,inner,end,start,true);x.closePath();x.fillStyle=colors[i%colors.length];x.fill();start=end});x.textAlign="center";x.fillStyle="#163b60";x.font="800 15px Montserrat,Arial,sans-serif";x.fillText(label==="Spend"?cash(total):fnum(total),cx,cy+2);x.fillStyle="#7890a8";x.font="10px Montserrat,Arial,sans-serif";x.fillText(label==="Spend"?"Total Spend":"Total Leads",cx,cy+18);x.textAlign="left";var max=Math.min(items.length,4),legendY=Math.min(h-12,cy+r+21);items.slice(0,max).forEach(function(v,i){var y=legendY+i*15;x.fillStyle=colors[i%colors.length];x.beginPath();x.arc(14,y-3,4,0,Math.PI*2);x.fill();x.fillStyle="#45617c";x.font="10px Montserrat,Arial,sans-serif";var name=String(v[0]);if(name.length>34)name=name.slice(0,32)+"…";x.fillText(name,25,y);x.fillStyle="#183c60";x.font="700 10px Montserrat,Arial,sans-serif";x.textAlign="right";x.fillText(fnum(v[1]/total*100,1)+"%",w-9,y);x.textAlign="left"});}
+function pie(id,items,label){
+ var z=canvas(id),x=z.x,w=z.w,h=z.h,total=items.reduce(function(s,v){return s+v[1]},0),colors=["#0d4d86","#277fbd","#62a9d9","#91c4e8","#b5d9f2","#557d9f","#a5b8c9"];
+ if(!total){x.fillStyle="#7890a8";x.font="12px Montserrat,Arial,sans-serif";x.fillText("No data for "+label,12,30);return;}
+ var cx=w/2,cy=Math.min(70,h*.39),r=Math.max(44,Math.min(57,w*.22,cy-5,h-cy-37)),inner=r*.66,start=-Math.PI/2;
+ items.forEach(function(v,i){var end=start+v[1]/total*Math.PI*2;x.beginPath();x.arc(cx,cy,r,start,end);x.arc(cx,cy,inner,end,start,true);x.closePath();x.fillStyle=colors[i%colors.length];x.fill();start=end;});
+ x.textAlign="center";x.fillStyle="#163b60";x.font="800 14px Montserrat,Arial,sans-serif";x.fillText(label==="Spend"?cash(total):fnum(total),cx,cy+2);
+ x.fillStyle="#7890a8";x.font="9px Montserrat,Arial,sans-serif";x.fillText(label==="Spend"?"Total Spend":"Total Leads",cx,cy+17);x.textAlign="left";
+ var max=Math.min(items.length,3),legendY=Math.min(h-9,cy+r+12);
+ items.slice(0,max).forEach(function(v,i){var y=legendY+i*14;x.fillStyle=colors[i%colors.length];x.beginPath();x.arc(14,y-3,4,0,Math.PI*2);x.fill();x.fillStyle="#45617c";x.font="9px Montserrat,Arial,sans-serif";var name=String(v[0]);if(name.length>34)name=name.slice(0,32)+"…";x.fillText(name,25,y);x.fillStyle="#183c60";x.font="700 9px Montserrat,Arial,sans-serif";x.textAlign="right";x.fillText(fnum(v[1]/total*100,1)+"%",w-9,y);x.textAlign="left";});
+}
 function axes(x,w,h,max,labels){var l=42,r=10,t=20,b=30,pw=w-l-r,ph=h-t-b;x.font="9px Montserrat,Arial,sans-serif";for(var i=0;i<5;i++){var y=t+ph*i/4;x.strokeStyle="#e7eef5";x.beginPath();x.moveTo(l,y);x.lineTo(w-r,y);x.stroke();x.fillStyle="#7188a1";x.fillText(fnum(max*(1-i/4),max<10?1:0),2,y+3)}labels.forEach(function(s,i){if(labels.length<10||i%Math.ceil(labels.length/7)===0){x.fillStyle="#7188a1";x.fillText(String(s).slice(5,10),l+i*pw/Math.max(1,labels.length-1)-12,h-8)}});return {l:l,t:t,pw:pw,ph:ph}}
 
 function chartKey(label){var s=String(label||"").toLowerCase();if(s.indexOf("spend")>=0)return "spend";if(s.indexOf("lead")>=0||s.indexOf("result")>=0)return "leads";if(s.indexOf("cpl")>=0||s.indexOf("cost per lead")>=0)return "cpl";if(s.indexOf("ctr")>=0)return "ctr";if(s.indexOf("cpc")>=0)return "cpc";if(s.indexOf("impression")>=0)return "imp";if(s.indexOf("reach")>=0)return "reach";if(s.indexOf("click")>=0)return "clicks";return "number";}
